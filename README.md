@@ -1,6 +1,11 @@
 # jQueryStorage
 JQuery storage plugin extends the default storage API to resolve cross-browser compatibility issues
 
+# Installation
+```
+npm install jquerystorage
+```
+
 # How does it work?
 jQueryStorage works as a standalone library as well as a jQuery plugin. There are few syntactical differences however. But fret not! You can use any syntax of your choice. The plugin automatically add missing dependencies (e.g. ``$``) so that your code works at all times. Syntaxwise it's all so simple!
 
