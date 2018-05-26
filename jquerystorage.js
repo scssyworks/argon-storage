@@ -254,16 +254,26 @@
         };
     }
     if (typeof window.common === 'object' && !Array.isArray(window.common)) {
-        window.common.storage = $.storage;
+        if (!window.common.storage) {
+            window.common.storage = $.storage;
+        }
     } else {
         window.common = {
             storage: $.storage
         };
     }
-    window.common.setCookie = setCookie;
-    window.common.getCookie = getCookie;
-    window.common.removeCookie = removeCookie;
-    window.common.resetCookie = resetCookie;
+    if (!window.common.setCookie) {
+        window.common.setCookie = setCookie;
+    }
+    if (!window.common.getCookie) {
+        window.common.getCookie = getCookie;
+    }
+    if (!window.common.removeCookie) {
+        window.common.removeCookie = removeCookie;
+    }
+    if (!window.common.resetCookie) {
+        window.common.resetCookie = resetCookie;
+    }
 })(
     window.jQuery
 );
