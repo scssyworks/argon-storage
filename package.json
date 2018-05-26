@@ -12,6 +12,7 @@
   },
   "keywords": [
     "jquery",
+    "jquery-plugin",
     "storage",
     "localStorage",
     "sessionStorage",
