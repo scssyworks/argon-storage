@@ -1,0 +1,26 @@
+{
+  "name": "jquerystorage",
+  "version": "1.0.0",
+  "description": "JQuery storage extends default storage API to resolve cross browser compatibility issues",
+  "main": "jquerystorage.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scssyworks/jquerystorage.git"
+  },
+  "keywords": [
+    "jquery",
+    "storage",
+    "localStorage",
+    "sessionStorage",
+    "cookies"
+  ],
+  "author": "Sachin Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scssyworks/jquerystorage/issues"
+  },
+  "homepage": "https://github.com/scssyworks/jquerystorage#readme"
+}
