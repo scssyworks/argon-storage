@@ -15,7 +15,7 @@ To set key in local storage use
 $.storage.set(key, value); // With or without jQuery
 common.storage.set(key, value); // Alternative syntax
 ```
-To set key in session storage (pass true ``flag`` as third parameter)
+To set key in session storage (pass ``true`` flag as third parameter)
 ```js
 $.storage.set(key, value, true); // Stores in session
 common.storage.set(key, value, true);
