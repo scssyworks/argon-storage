@@ -60,7 +60,7 @@ To update the value of an existing key. It is similar to ``set`` except that it 
 $.store.update(key[, data or callback]);
 ```
 
-<b>Example 1: Updating object properties</b>
+<b>Example 1: Updating object properties</b><br>
 Using ``set``:
 ```js
 $.store.set('profile', { name: "Joanne", age: 26 });
@@ -85,7 +85,7 @@ $.store.update('profile', data => {
 });
 ```
 
-<b>Example 2: Updating arrays</b>
+<b>Example 2: Updating arrays</b><br>
 Using ``set``:
 ```js
 $.store.set('arr', [1,2,3,4]);
@@ -102,7 +102,7 @@ $.store.update('arr', data => {
 });
 ```
 
-<b>Example 3: Updating multiple stores at once</b>
+<b>Example 3: Updating multiple stores at once</b><br>
 There are chances that your data exists in multiple stores having the same key. Update allows you to modify them all at once
 Using ``set``:
 ```js
