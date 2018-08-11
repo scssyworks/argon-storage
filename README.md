@@ -1,5 +1,5 @@
 # jQueryStorage
-JQuery storage plugin extends the default storage API to resolve cross-browser compatibility issues
+JQuery storage plugin extends default storage API to resolve cross-browser compatibility issues
 
 # Installation
 ```
@@ -7,28 +7,48 @@ npm install jquerystorage
 ```
 
 # How does it work?
-jQueryStorage works as a standalone library as well as a jQuery plugin. There are few syntactical differences however. But fret not! You can use any syntax of your choice. The plugin automatically add missing dependencies (e.g. ``$``) so that your code works at all times. Syntaxwise it's all so simple!
+JQuery storage is a primarily a jQuery plugin. However it can be used as a standalone library. It also supports Webpack ES6 modular syntax. Different ways to use JQuery storage are shown below:
 
-# Set
-To set key in local storage use
+<b>JQuery</b>
 ```js
-$.storage.set(key, value); // With or without jQuery
-common.storage.set(key, value); // Alternative syntax
+$.store.<method>(...);
 ```
-To set key in session storage (pass ``true`` flag as third parameter)
+
+<b>Standalone</b>
 ```js
-$.storage.set(key, value, true); // Stores in session
-common.storage.set(key, value, true);
+commonStore.<method>(...);
+```
+
+<b>Webpack</b>
+```js
+import store, {getCookie, setCookie} from 'jquerystorage';
+store.<method>(...);
+```
+
+# JQuery storage methods:
+# set
+To set data in HTML5 storage. By default the values are stored in ``localStorage``.
+```js
+$.store.set(key, value); // jQuery
+commonStore.set(key, value); // Without jQuery
+```
+To set key in session storage (set ``isSession`` flag to ``true`` by passing it as a third prameter)
+```js
+$.store.set(key, value, true); // Stores in session
+commonStore.set(key, value, true);
 ```
 If storage is unavailable, the method automatically fallbacks to cookies as alternative storage
 
-
-# Get
-To get any key value use
+# get
+To get value from storage
 ```js
-$.storage.get(key);
-common.storage.get(key); // Alternative syntax
+$.store.get(key);
+commonStore.get(key); // Alternative syntax
 ```
-Get method checks all the available storages to get the value of key. It also parses the data if stored in JSON format.
+Get method checks all the available storages to get the data. The data is automatically parsed if it is a valid JSON string.
 
-jQueryStorage works on all major desktop and mobile browsers including IE.
+# getAll
+Gets data from all available stores. The values are returned as an array of objects with information like type of storage used.
+```js
+$.store.getAll(key); // --> Returns [{ value: <data value>, storage: '<type of storage>' }, { ... }, { ... }];
+```
