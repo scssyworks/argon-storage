@@ -3,7 +3,7 @@ JQuery storage plugin extends default HTML5 storage API to resolve cross-browser
 
 # Installation
 ```
-npm install jquerystorage
+npm install jquerystorage@beta
 ```
 
 # How does it work?
