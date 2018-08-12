@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("jquerystorage", [], factory);
+	else if(typeof exports === 'object')
+		exports["jquerystorage"] = factory();
+	else
+		root["jquerystorage"] = factory();
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -1850,4 +1860,5 @@ module.exports = __webpack_require__(0);
 
 /***/ })
 /******/ ]);
+});
 //# sourceMappingURL=jquerystorage.js.map

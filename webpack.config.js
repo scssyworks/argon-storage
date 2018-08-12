@@ -11,7 +11,10 @@ module.exports = {
     },
     output: {
         filename: 'js/[name].js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        library: 'jquerystorage',
+        libraryTarget: 'umd',
+        umdNamedDefine: true
     },
     module: {
         rules: [
