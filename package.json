@@ -1,6 +1,6 @@
 {
   "name": "jquerystorage",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "JQuery storage extends default storage API to resolve cross browser compatibility issues",
   "main": "dist/js/jquerystorage.js",
   "scripts": {
