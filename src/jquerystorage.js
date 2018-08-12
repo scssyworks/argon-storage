@@ -367,7 +367,7 @@ const store = {
 
 (function ($) {
     window.commonStore = {};
-    Object.assign(window.commonStore, Object.assign(store, {
+    Object.assign(window.commonStore, Object.assign({}, store, {
         setCookie,
         getCookie,
         removeCookie,
