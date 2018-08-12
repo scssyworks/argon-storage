@@ -699,8 +699,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.resetCookie = exports.removeCookie = exports.getCookie = exports.setCookie = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; /**
                                                                                                                                                                                                                                                                                * JQuery storage extends default storage API to resolve cross-browser issues
                                                                                                                                                                                                                                                                                * @author       Sachin Singh
@@ -1151,22 +1149,25 @@ var store = {
         }
     }
 };
-var publishObject = _extends({}, store, {
-    setCookie: setCookie,
-    getCookie: getCookie,
-    removeCookie: removeCookie,
-    resetCookie: resetCookie
-});
-if (window.jQuery) {
-    window.jQuery.store = publishObject;
-} else {
-    window.commonStore = publishObject;
-}
-exports.default = store;
+
+(function ($) {
+    window.commonStore = {};
+    Object.assign(window.commonStore, Object.assign(store, {
+        setCookie: setCookie,
+        getCookie: getCookie,
+        removeCookie: removeCookie,
+        resetCookie: resetCookie
+    }));
+    if ($) {
+        $.store = window.commonStore;
+    }
+})(window.jQuery);
+
 exports.setCookie = setCookie;
 exports.getCookie = getCookie;
 exports.removeCookie = removeCookie;
 exports.resetCookie = resetCookie;
+exports.default = store;
 
 /***/ }),
 /* 39 */

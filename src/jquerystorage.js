@@ -364,22 +364,24 @@ const store = {
         }
     }
 };
-const publishObject = {
-    ...store,
-    setCookie,
-    getCookie,
-    removeCookie,
-    resetCookie
-};
-if (window.jQuery) {
-    window.jQuery.store = publishObject;
-} else {
-    window.commonStore = publishObject;
-}
-export default store;
+
+(function ($) {
+    window.commonStore = {};
+    Object.assign(window.commonStore, Object.assign(store, {
+        setCookie,
+        getCookie,
+        removeCookie,
+        resetCookie
+    }));
+    if ($) {
+        $.store = window.commonStore;
+    }
+}(window.jQuery));
+
 export {
     setCookie,
     getCookie,
     removeCookie,
     resetCookie
 };
+export default store;
