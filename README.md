@@ -1,5 +1,5 @@
 # JQuery storage
-JQuery storage plugin extends default storage API to resolve cross-browser compatibility issues
+JQuery storage plugin extends default HTML5 storage API to resolve cross-browser compatibility issues
 
 # Installation
 ```
@@ -7,7 +7,7 @@ npm install jquerystorage
 ```
 
 # How does it work?
-JQuery storage is a primarily a jQuery plugin. However it can be used as a standalone library. It also supports Webpack ES6 modular syntax. Different ways to use JQuery storage are shown below:
+JQuery storage is primarily a jQuery plugin. However, it can be used as a standalone library. It supports Webpack's modular syntax so you can use it in ES6 projects. Different ways of calling JQuery storage methods are shown below:
 
 <b>JQuery</b>
 ```js
@@ -21,7 +21,7 @@ commonStore.<method>(...);
 
 <b>Webpack</b>
 ```js
-import store, {getCookie, setCookie} from 'jquerystorage';
+import store, { getCookie, setCookie } from 'jquerystorage';
 store.<method>(...);
 ```
 
@@ -48,7 +48,7 @@ commonStore.get(key); // Alternative syntax
 Get method checks all the available storages to get the data. The data is automatically parsed if it is a valid JSON string.
 
 # getAll
-To get data from all available stores. The values are returned as an array of objects with information like type of storage used.
+To get data from all stores. The values are returned in a form of array of objects with information such as type of storage used.
 ```js
 $.store.getAll(key); // --> Returns [{ value: <data value>, storage: '<type of storage>' }, { ... }, { ... }];
 ```
@@ -75,13 +75,13 @@ $.store.set('profile', { name: "Joanne", age: 26 });
 $.store.update('profile', { age: 27 }); // --> Value now becomes { name: "Joanne", age: 27 }
 ```
 
-You can also use following syntax:
+You can also use syntax below:
 ```js
 // 1. Arrow function with implicit return
 $.store.update('profile', () => { age: 27 });
 // 2. Arrow function with data passed as value
 $.store.update('profile', data => {
-    data.value.age = 27; // Modify the existing object
+    data.value.age = 27; // Modify existing object
 });
 ```
 
@@ -145,7 +145,7 @@ $.store.update('profile', (...args) => {
 });
 ```
 
-Update is particularly useful when data sets are quite large and you want to update only a portion of that data.
+Update is useful when data sets are large and you wisth to update only a small chunk.
 
 # setCookie
 To create a cookie
@@ -171,7 +171,7 @@ To reset an existing cookie with new data. It is similar to ``setCookie`` except
 $.store.resetCookie(key, value[, expiry][, path][, domain]);
 ```
 
-"Reset" allows you to change expiry ,path and domain of existing cookie without creating a new one.
+"Reset" allows you to change expiry ,path and domain of existing cookie.
 
 # Summing up
 JQuery storage provides with a robust and cross browser way to manage HTML5 storage. However, it doese not overcome certain limitations like storage size and availability (yet). If HTML5 storage is unavailable, there is a fallback of cookie storage, but we all know that cookie storage is quite limited in terms of size. It means we cannot save large chunks of data as of now.
