@@ -2,9 +2,15 @@
 JQuery storage plugin extends default HTML5 storage API to resolve cross-browser compatibility issues
 
 # Installation
+```js
+npm install jquerystorage
 ```
+To install the ``beta`` version use
+```js
 npm install jquerystorage@beta
 ```
+
+This documentation bescribes beta version on this plugin. To see the the documentation for version 1 refer to branch <a href="https://github.com/scssyworks/jquerystorage/tree/feature/v1">feature/v1</a>
 
 # How does it work?
 JQuery storage is primarily a jQuery plugin. However, it can be used as a standalone library. It supports Webpack's modular syntax so you can use it in ES6 projects. Different ways of calling JQuery storage methods are shown below:
