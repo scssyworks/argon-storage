@@ -2,7 +2,8 @@
   "name": "jquerystorage",
   "version": "2.0.0",
   "description": "JQuery storage extends default storage API to resolve cross browser compatibility issues",
-  "main": "src/jquerystorage.js",
+  "main": "dist/js/jquerystorage.js",
+  "module": "src/jquerystorage.js",
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --open"
