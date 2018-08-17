@@ -12,8 +12,15 @@ module.exports = {
     output: {
         filename: 'js/[name].js',
         path: path.resolve(__dirname, 'dist'),
-        library: 'jquerystorage',
+        library: {
+            root: 'commonStore',
+            amd: 'jquerystorage',
+            commonjs: 'jquerystorage'
+        },
         libraryTarget: 'umd',
+        libraryExport: [
+            'default'
+        ],
         umdNamedDefine: true
     },
     module: {

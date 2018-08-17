@@ -6,7 +6,7 @@
 	else if(typeof exports === 'object')
 		exports["jquerystorage"] = factory();
 	else
-		root["jquerystorage"] = factory();
+		root["commonStore"] = factory();
 })(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -697,7 +697,6 @@ module.exports = function (argument) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.resetCookie = exports.removeCookie = exports.getCookie = exports.setCookie = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; /**
                                                                                                                                                                                                                                                                                * JQuery storage extends default storage API to resolve cross-browser issues
@@ -1150,23 +1149,21 @@ var store = {
     }
 };
 
+// Assign cookie methods to store
+Object.assign(store, {
+    setCookie: setCookie,
+    getCookie: getCookie,
+    removeCookie: removeCookie,
+    resetCookie: resetCookie
+});
+
+// If jQuery is available, create a static store in jQuery object
 (function ($) {
-    window.commonStore = {};
-    Object.assign(window.commonStore, Object.assign({}, store, {
-        setCookie: setCookie,
-        getCookie: getCookie,
-        removeCookie: removeCookie,
-        resetCookie: resetCookie
-    }));
     if ($) {
-        $.store = window.commonStore;
+        $.store = store;
     }
 })(window.jQuery);
-
-exports.setCookie = setCookie;
-exports.getCookie = getCookie;
-exports.removeCookie = removeCookie;
-exports.resetCookie = resetCookie;
+// Export store as ES6 default module
 exports.default = store;
 
 /***/ }),
@@ -1860,6 +1857,6 @@ module.exports = __webpack_require__(0);
 
 
 /***/ })
-/******/ ]);
+/******/ ])["default"];
 });
 //# sourceMappingURL=jquerystorage.js.map

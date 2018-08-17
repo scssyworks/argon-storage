@@ -365,23 +365,19 @@ const store = {
     }
 };
 
-(function ($) {
-    window.commonStore = {};
-    Object.assign(window.commonStore, Object.assign({}, store, {
-        setCookie,
-        getCookie,
-        removeCookie,
-        resetCookie
-    }));
-    if ($) {
-        $.store = window.commonStore;
-    }
-}(window.jQuery));
-
-export {
+// Assign cookie methods to store
+Object.assign(store, {
     setCookie,
     getCookie,
     removeCookie,
     resetCookie
-};
+});
+
+// If jQuery is available, create a static store in jQuery object
+(function ($) {
+    if ($) {
+        $.store = store;
+    }
+}(window.jQuery));
+// Export store as ES6 default module
 export default store;

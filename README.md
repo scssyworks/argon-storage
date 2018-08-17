@@ -27,7 +27,7 @@ commonStore.<method>(...);
 
 <b>Webpack</b>
 ```js
-import store, { getCookie, setCookie } from 'jquerystorage';
+import store from 'jquerystorage';
 store.<method>(...);
 ```
 
