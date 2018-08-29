@@ -4,20 +4,31 @@
  * @dependencies jQuery 1.11+
  * @date         26/05/2018
  */
-
-// Include needed polyfills
-import "core-js/features/array/includes";
-import "core-js/features/array/find";
-import "core-js/features/string/includes";
-import "core-js/features/string/starts-with";
-import "core-js/features/string/ends-with";
-import "core-js/features/object/assign";
-
 const messages = {
     params: 'Insufficient parameters'
 };
 
 const _hasOwn = Object.prototype.hasOwnProperty;
+
+/**
+ * Safety method for console logging
+ * @param  {...any} args console arguments
+ */
+function _log(...args) {
+    if (typeof console !== "undefined") {
+        console.log(...args);
+    }
+}
+
+/**
+ * Safety method for console logging
+ * @param  {...any} args console arguments
+ */
+function _err(...args) {
+    if (typeof console !== "undefined") {
+        console.error(...args);
+    }
+}
 
 /**
  * Check if passed value is a pure object
@@ -59,7 +70,7 @@ function setCookie() {
         const cookiePath = `; path=${path.trim()}`;
         let cookieDomain = '';
         // IE does not allow localhost domains
-        if (!['localhost', '127.0.0.1', null].includes(domain)) {
+        if (['localhost', '127.0.0.1', null].indexOf(domain) === -1) {
             cookieDomain = `; domain=${domain.trim()}`;
         }
         // Mark the cookie as secure if created in secure context
@@ -91,7 +102,7 @@ function getCookie() {
             // If yes then return its corresponding value
             for (let c of allCookies) {
                 c = c.trim(); // Trim the key value pair to remove extra spaces
-                if (c.includes(`${key}=`)) {
+                if (c.indexOf(`${key}=`) > -1) {
                     // Return the value substring
                     return c.substring(`${key}=`.length, c.length).trim();
                 }
@@ -114,7 +125,7 @@ function removeCookie() {
         let deletedCookieString = '';
         // IE does not allow localhost domains
         // Hence check if passed domain is not localhost or null
-        if (!['localhost', '127.0.0.1', null].includes(domain)) {
+        if (['localhost', '127.0.0.1', null].indexOf(domain) === -1) {
             cookieDomain = `; domain=${domain.trim()}`;
         }
         deletedCookieString = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC${cookieDomain}; path=${path}`;
@@ -153,6 +164,9 @@ const store = {
             localStorage.removeItem('test');
             return true;
         } catch (e) {
+            if (this.config.debug) {
+                _log("Storage API is not supported in this environment");
+            }
             return false;
         }
     },
@@ -171,7 +185,7 @@ const store = {
                     window[isSession ? 'sessionStorage' : 'localStorage'].setItem(key, savedValue);
                 } catch (e) {
                     if (this.config.debug) {
-                        console.error(e);
+                        _err(e);
                     }
                 }
             } else {
@@ -180,7 +194,7 @@ const store = {
             }
         } else {
             if (this.config.debug) {
-                console.log(messages.params);
+                _log(messages.params);
             }
         }
     },
@@ -196,14 +210,14 @@ const store = {
                     return !window.localStorage.key(key) || !window.sessionStorage.key(key) || removeCookie(key);
                 } catch (e) {
                     if (this.config.debug) {
-                        console.error(e);
+                        _err(e);
                     }
                 }
             }
             return removeCookie(key);
         } else {
             if (this.config.debug) {
-                console.log(messages.params);
+                _log(messages.params);
             }
         }
     },
@@ -231,7 +245,7 @@ const store = {
                     });
                 } catch (e) {
                     if (this.config.debug) {
-                        console.error(e);
+                        _err(e);
                     }
                 }
             }
@@ -250,7 +264,7 @@ const store = {
                     data.value = JSON.parse(data.value);
                 } catch (e) {
                     if (this.config.debug) {
-                        console.log(e);
+                        _log(e);
                     }
                 }
                 return data;
@@ -274,7 +288,7 @@ const store = {
             // Else the browser does have value stored either is session or local storage which will get preference over cookie
             // If stored in all three stores, fetch value based on isSession flag
             if (valueList.length === 3) {
-                return valueList.find(valueOb => valueOb.storage === (isSession ? 'sessionStorage' : 'localStorage')).value;
+                return valueList.filter(valueOb => valueOb.storage === (isSession ? 'sessionStorage' : 'localStorage'))[0].value;
             }
             // If only two stores are returned, value can be in any two combination of stores:
             // 1. [localStorage, cookie]
@@ -284,17 +298,17 @@ const store = {
             // If session flag is true check if value was stored in session storage
             // If not then return the cookie value
             if (isSession) {
-                if (storageTypes.includes('sessionStorage')) {
-                    return valueList.find(valueOb => valueOb.storage === 'sessionStorage').value;
+                if (storageTypes.indexOf('sessionStorage') > -1) {
+                    return valueList.filter(valueOb => valueOb.storage === 'sessionStorage')[0].value;
                 }
-                return valueList.find(valueOb => valueOb.storage === 'cookie').value;
+                return valueList.filter(valueOb => valueOb.storage === 'cookie')[0].value;
             }
             // If session flag is false, cookie value doesn't matter
             // Check for session or local storage and return the value
-            return valueList.find(valueOb => ['sessionStorage', 'localStorage'].includes(valueOb.storage)).value;
+            return valueList.filter(valueOb => (['sessionStorage', 'localStorage'].indexOf(valueOb.storage) > -1))[0].value;
         } else {
             if (this.config.debug) {
-                console.log(messages.params);
+                _log(messages.params);
             }
         }
     },
@@ -330,7 +344,7 @@ const store = {
                     updatedValue = JSON.parse(callback);
                 } catch (e) {
                     if (this.config.debug) {
-                        console.error(e);
+                        _err(e);
                     }
                     updatedValue = callback;
                 }
@@ -342,7 +356,10 @@ const store = {
                 values.forEach((valueOb) => {
                     const { value } = valueOb;
                     if (_isObject(value) && _isObject(updatedValue)) {
-                        valueOb.value = Object.assign(value, updatedValue);
+                        valueOb.value = {
+                            ...value,
+                            ...updatedValue
+                        };
                     } else {
                         valueOb.value = updatedValue;
                     }
@@ -350,7 +367,7 @@ const store = {
             }
             // Write back all the values to their destinations
             values.forEach(({ value, storage: store }) => {
-                if (['sessionStorage', 'localStorage'].includes(store)) {
+                if (['sessionStorage', 'localStorage'].indexOf(store) > -1) {
                     self.set(key, value, store === 'sessionStorage');
                 }
                 if (store === 'cookie') {
@@ -359,25 +376,25 @@ const store = {
             });
         } else {
             if (this.config.debug) {
-                console.log(messages.params);
+                _log(messages.params);
             }
         }
     }
 };
 
-// Assign cookie methods to store
-Object.assign(store, {
+const commonStore = {
+    ...store,
     setCookie,
     getCookie,
     removeCookie,
     resetCookie
-});
+};
 
 // If jQuery is available, create a static store in jQuery object
 (function ($) {
     if ($) {
-        $.store = store;
+        $.store = commonStore;
     }
 }(window.jQuery));
 // Export store as ES6 default module
-export default store;
+export default commonStore;
