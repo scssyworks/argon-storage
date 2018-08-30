@@ -1,10 +1,10 @@
 {
-  "name": "commonstorage",
+  "name": "cstorage",
   "version": "3.0.0",
   "description": "JQuery storage extends default storage API to resolve cross browser compatibility issues",
-  "main": "dist/js/commonstorage.js",
-  "module": "src/commonstorage.js",
-  "types": "src/commonstorage.d.ts",
+  "main": "dist/js/cstorage.js",
+  "module": "src/cstorage.js",
+  "types": "src/cstorage.d.ts",
   "scripts": {
     "build": "rollup -c"
   },
@@ -14,7 +14,7 @@
   },
   "keywords": [
     "storage",
-    "commonstorage",
+    "cstorage",
     "localStorage",
     "sessionStorage",
     "cookies"

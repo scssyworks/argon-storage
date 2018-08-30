@@ -3,7 +3,7 @@ Common storage unifies different storage types (local, session, and cookie) and 
 
 # Installation
 ```js
-npm install --save commonstorage
+npm install --save cstorage
 ```
 
 # How does it work?
@@ -11,75 +11,75 @@ Common storage can be used in following ways:
 
 1. Using script tag
 ```js
-<script src="commonstorage.js"></script>
+<script src="cstorage.js"></script>
 <script>
-commonstorage.get(...);
+cstorage.get(...);
 </script>
 ```
 
 2. Using module bundler
 ```js
-import { commonstorage } from "commonstorage";
-commonstorage.get(...);
+import { cstorage } from "cstorage";
+cstorage.get(...);
 ```
 ```js
-const commonstorage = require("commonstorage");
-commonstorage.get(...);
+const cstorage = require("cstorage");
+cstorage.get(...);
 ```
 
 # Storage methods:
 # set
 To set data in HTML5 storage. By default the values are stored in ``localStorage``.
 ```js
-commonstorage.set(key, value);
+cstorage.set(key, value);
 ```
 To set key in session storage (set ``isSession`` flag to ``true`` by passing it as a third prameter)
 ```js
-commonstorage.set(key, value[, isSession]);
+cstorage.set(key, value[, isSession]);
 ```
 If storage is unavailable, the method automatically fallbacks to cookies as alternative storage
 
 # get
 To get value from storage
 ```js
-commonstorage.get(key);
+cstorage.get(key);
 ```
 Get method checks all the available storages to get the data. The data is automatically parsed if it is a valid JSON string.
 
 # getAll
 To get data from all stores. The values are returned in a form of array of objects with information such as type of storage used.
 ```js
-commonstorage.getAll(key); // --> Returns [{ value: <data value>, storage: '<type of storage>' }, { ... }, { ... }];
+cstorage.getAll(key); // --> Returns [{ value: <data value>, storage: '<type of storage>' }, { ... }, { ... }];
 ```
 
 # update
 To update the value of an existing key. It is similar to ``set`` except that it gives you more control over how you want to update the data. We have following examples that explain how ``update`` is different from ``set``.
 
 ```js
-commonstorage.update(key[, data or callback]);
+cstorage.update(key[, data or callback]);
 ```
 
 <b>Example 1: Updating object properties</b><br>
 Using ``set``:
 ```js
-commonstorage.set('profile', { name: "Joanne", age: 26 });
+cstorage.set('profile', { name: "Joanne", age: 26 });
 // Updating the age to 27
-commonstorage.set('profile', { name: "Joanne", age: 27 }); // You have re-write the entire object
+cstorage.set('profile', { name: "Joanne", age: 27 }); // You have re-write the entire object
 ```
 
 Using ``update``:
 ```js
-commonstorage.set('profile', { name: "Joanne", age: 26 });
+cstorage.set('profile', { name: "Joanne", age: 26 });
 // Updating profile by passing only the age
-commonstorage.update('profile', { age: 27 }); // --> Value now becomes { name: "Joanne", age: 27 }
+cstorage.update('profile', { age: 27 }); // --> Value now becomes { name: "Joanne", age: 27 }
 ```
 
 You can also use syntax below:
 ```js
 // 1. Arrow function with implicit return
-commonstorage.update('profile', () => { age: 27 });
+cstorage.update('profile', () => { age: 27 });
 // 2. Arrow function with data passed as value
-commonstorage.update('profile', data => {
+cstorage.update('profile', data => {
     data.value.age = 27; // Modify existing object
 });
 ```
@@ -87,16 +87,16 @@ commonstorage.update('profile', data => {
 <b>Example 2: Updating arrays</b><br>
 Using ``set``:
 ```js
-commonstorage.set('arr', [1,2,3,4]);
+cstorage.set('arr', [1,2,3,4]);
 // Insert a new value to array
-commonstorage.set('arr', [1,2,3,4,'Hello']); // <-- Inserts string 'hello'. But you need to pass the entire array in this case
+cstorage.set('arr', [1,2,3,4,'Hello']); // <-- Inserts string 'hello'. But you need to pass the entire array in this case
 ```
 
 Using ``update``:
 ```js
-commonstorage.set('arr', [1,2,3,4]);
+cstorage.set('arr', [1,2,3,4]);
 // Insert a new value to array
-commonstorage.update('arr', data => {
+cstorage.update('arr', data => {
     data.value.push('Hello'); // Just push a new value to existing array
 });
 ```
@@ -105,19 +105,19 @@ commonstorage.update('arr', data => {
 There are chances that your data exists in multiple stores having the same key. Update allows you to modify them all at once
 Using ``set``:
 ```js
-commonstorage.set('profile', { name: 'Joanne' });
-commonstorage.setCookie('profile', { name: 'Adam' });
+cstorage.set('profile', { name: 'Joanne' });
+cstorage.setCookie('profile', { name: 'Adam' });
 // Add age = 27 to both profiles currently stored in different stores
-commonstorage.set('profile', { name: 'Joanne', age: 27 });
-commonstorage.setCookie('profile', { name: 'Adam', age: 27 });
+cstorage.set('profile', { name: 'Joanne', age: 27 });
+cstorage.setCookie('profile', { name: 'Adam', age: 27 });
 ```
 
 Using ``update``:
 ```js
-commonstorage.set('profile', { name: 'Joanne' });
-commonstorage.setCookie('profile', { name: 'Adam' });
+cstorage.set('profile', { name: 'Joanne' });
+cstorage.setCookie('profile', { name: 'Adam' });
 // Add age = 27 to both profiles currently stored in different stores
-commonstorage.update('profile', { age: 27 }); // <-- This updates all stores at once
+cstorage.update('profile', { age: 27 }); // <-- This updates all stores at once
 ```
 
 More complex example where we want to update different values:
@@ -126,19 +126,19 @@ Consider same example as above. This time we are inserting different ages for Jo
 
 Using ``set``:
 ```js
-commonstorage.set('profile', { name: 'Joanne' });
-commonstorage.setCookie('profile', { name: 'Adam' });
+cstorage.set('profile', { name: 'Joanne' });
+cstorage.setCookie('profile', { name: 'Adam' });
 // Add age = 27 to both profiles currently stored in different stores
-commonstorage.set('profile', { name: 'Joanne', age: 27 });
-commonstorage.setCookie('profile', { name: 'Adam', age: 30 });
+cstorage.set('profile', { name: 'Joanne', age: 27 });
+cstorage.setCookie('profile', { name: 'Adam', age: 30 });
 ```
 
 Using ``update``:
 ```js
-commonstorage.set('profile', { name: 'Joanne' });
-commonstorage.setCookie('profile', { name: 'Adam' });
+cstorage.set('profile', { name: 'Joanne' });
+cstorage.setCookie('profile', { name: 'Adam' });
 // Add age = 27 to both profiles currently stored in different stores
-commonstorage.update('profile', (...args) => {
+cstorage.update('profile', (...args) => {
     args.find(arg => arg.storage === 'localStorage').value.age = 27;
     args.find(arg => arg.storage === 'cookie').value.age = 30;
 });
@@ -149,25 +149,25 @@ Update is useful when data sets are large and you wisth to update only a small c
 # setCookie
 To create a cookie
 ```js
-commonstorage.setCookie(key, value[, expiry][, path][, domain]);
+cstorage.setCookie(key, value[, expiry][, path][, domain]);
 ```
 
 # getCookie
 To get cookie from cookie store
 ```js
-commonstorage.getCookie(key, value);
+cstorage.getCookie(key, value);
 ```
 
 # removeCookie
 To delete a cookie from cookie store
 ```js
-commonstorage.removeCookie(key[, path][, domain]);
+cstorage.removeCookie(key[, path][, domain]);
 ```
 
 # resetCookie
 To reset an existing cookie with new data. It is similar to ``setCookie`` except that it deletes existing cookie first.
 ```js
-commonstorage.resetCookie(key, value[, expiry][, path][, domain]);
+cstorage.resetCookie(key, value[, expiry][, path][, domain]);
 ```
 
 "Reset" allows you to change expiry ,path and domain of existing cookie.

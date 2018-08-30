@@ -382,7 +382,7 @@ const store = {
     }
 };
 
-const commonstorage = {
+const cstorage = {
     ...store,
     setCookie,
     getCookie,
@@ -391,4 +391,4 @@ const commonstorage = {
 };
 
 // Export store as ES6 named module
-export { commonstorage };
+export { cstorage };

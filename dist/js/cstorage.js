@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (factory((global.commonstorage = {})));
+  (factory((global.cstorage = {})));
 }(this, (function (exports) { 'use strict';
 
   function _typeof(obj) {
@@ -565,16 +565,16 @@
     }
   };
 
-  var commonstorage = _objectSpread({}, store, {
+  var cstorage = _objectSpread({}, store, {
     setCookie: setCookie,
     getCookie: getCookie,
     removeCookie: removeCookie,
     resetCookie: resetCookie
   }); // Export store as ES6 named module
 
-  exports.commonstorage = commonstorage;
+  exports.cstorage = cstorage;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
-//# sourceMappingURL=commonstorage.js.map
+//# sourceMappingURL=cstorage.js.map

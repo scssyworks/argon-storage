@@ -3,12 +3,12 @@ import { uglify } from "rollup-plugin-uglify";
 
 export default [
     {
-        input: "src/commonstorage.js",
+        input: "src/cstorage.js",
         output: {
-            file: "dist/js/commonstorage.js",
+            file: "dist/js/cstorage.js",
             sourcemap: true,
             format: "umd",
-            name: "commonstorage"
+            name: "cstorage"
         },
         plugins: [
             babel({
@@ -17,11 +17,11 @@ export default [
         ]
     },
     {
-        input: "src/commonstorage.js",
+        input: "src/cstorage.js",
         output: {
-            file: "dist/js/commonstorage.min.js",
+            file: "dist/js/cstorage.min.js",
             format: "umd",
-            name: "commonstorage"
+            name: "cstorage"
         },
         plugins: [
             babel({
