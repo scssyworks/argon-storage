@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.commonStore = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (factory((global.commonstorage = {})));
+}(this, (function (exports) { 'use strict';
 
   function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -565,21 +565,16 @@
     }
   };
 
-  var commonStore = _objectSpread({}, store, {
+  var commonstorage = _objectSpread({}, store, {
     setCookie: setCookie,
     getCookie: getCookie,
     removeCookie: removeCookie,
     resetCookie: resetCookie
-  }); // If jQuery is available, create a static store in jQuery object
+  }); // Export store as ES6 named module
 
+  exports.commonstorage = commonstorage;
 
-  (function ($) {
-    if ($) {
-      $.store = commonStore;
-    }
-  })(window.jQuery); // Export store as ES6 default module
-
-  return commonStore;
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
-//# sourceMappingURL=jquerystorage.js.map
+//# sourceMappingURL=commonstorage.js.map

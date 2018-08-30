@@ -382,7 +382,7 @@ const store = {
     }
 };
 
-const commonStore = {
+const commonstorage = {
     ...store,
     setCookie,
     getCookie,
@@ -390,11 +390,5 @@ const commonStore = {
     resetCookie
 };
 
-// If jQuery is available, create a static store in jQuery object
-(function ($) {
-    if ($) {
-        $.store = commonStore;
-    }
-}(window.jQuery));
-// Export store as ES6 default module
-export default commonStore;
+// Export store as ES6 named module
+export { commonstorage };
