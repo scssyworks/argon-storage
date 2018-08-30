@@ -10,7 +10,7 @@ npm install --save commonstorage
 Common storage can be used in following ways:
 
 1. Using script tag
-```
+```js
 <script src="commonstorage.js"></script>
 <script>
 commonstorage.get(...);
