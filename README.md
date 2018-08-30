@@ -11,10 +11,10 @@ Common storage can be used in following ways:
 
 1. Using script tag
 ```
-\<script src="commonstorage.js">\</script>
-\<script>
+<script src="commonstorage.js"></script>
+<script>
 commonstorage.get(...);
-\</script>
+</script>
 ```
 
 2. Using module bundler
