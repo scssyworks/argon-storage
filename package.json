@@ -1,6 +1,6 @@
 {
   "name": "cstorage",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "JQuery storage extends default storage API to resolve cross browser compatibility issues",
   "main": "dist/js/cstorage.js",
   "module": "src/cstorage.js",
