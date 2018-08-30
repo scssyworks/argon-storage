@@ -1,6 +1,6 @@
 {
   "name": "commonstorage",
-  "version": "2.0.6",
+  "version": "3.0.0",
   "description": "JQuery storage extends default storage API to resolve cross browser compatibility issues",
   "main": "dist/js/commonstorage.js",
   "module": "src/commonstorage.js",
