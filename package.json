@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/scssyworks/jquerystorage.git"
+    "url": "git+https://github.com/scssyworks/cstorage.git"
   },
   "keywords": [
     "storage",
@@ -22,9 +22,9 @@
   "author": "Sachin Singh",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/scssyworks/jquerystorage/issues"
+    "url": "https://github.com/scssyworks/cstorage/issues"
   },
-  "homepage": "https://github.com/scssyworks/jquerystorage#readme",
+  "homepage": "https://github.com/scssyworks/cstorage#readme",
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
