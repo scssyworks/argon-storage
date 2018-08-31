@@ -390,5 +390,5 @@ const cstorage = {
     resetCookie
 };
 
-// Export store as ES6 module
+// Export store as ES6 default export
 export default cstorage;

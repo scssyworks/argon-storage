@@ -570,7 +570,7 @@
     getCookie: getCookie,
     removeCookie: removeCookie,
     resetCookie: resetCookie
-  }); // Export store as ES6 module
+  }); // Export store as ES6 default export
 
   return cstorage;
 
