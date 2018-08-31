@@ -19,7 +19,7 @@ cstorage.get(...);
 
 2. Using module bundler
 ```js
-import { cstorage } from "cstorage";
+import cstorage from "cstorage";
 cstorage.get(...);
 ```
 ```js

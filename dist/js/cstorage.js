@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (factory((global.cstorage = {})));
-}(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.cstorage = factory());
+}(this, (function () { 'use strict';
 
   function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -570,11 +570,9 @@
     getCookie: getCookie,
     removeCookie: removeCookie,
     resetCookie: resetCookie
-  }); // Export store as ES6 named module
+  }); // Export store as ES6 module
 
-  exports.cstorage = cstorage;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
+  return cstorage;
 
 })));
 //# sourceMappingURL=cstorage.js.map
