@@ -564,13 +564,12 @@
       }
     }
   };
-
   var cstorage = _objectSpread({}, store, {
     setCookie: setCookie,
     getCookie: getCookie,
     removeCookie: removeCookie,
     resetCookie: resetCookie
-  }); // Export store as ES6 default export
+  });
 
   return cstorage;
 

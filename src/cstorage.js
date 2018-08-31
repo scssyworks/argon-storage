@@ -382,13 +382,10 @@ const store = {
     }
 };
 
-const cstorage = {
+export default {
     ...store,
     setCookie,
     getCookie,
     removeCookie,
     resetCookie
 };
-
-// Export store as ES6 default export
-export default cstorage;
