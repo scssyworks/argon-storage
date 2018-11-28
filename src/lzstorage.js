@@ -140,7 +140,8 @@ function removeCookie() {
         deletedCookieString = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC${cookieDomain}; path=${path}`;
         document.cookie = deletedCookieString;
         // Check updated value to get deletion status
-        return !getCookie(key).length;
+
+        return !getCookie.apply(this, key).length;
     }
     return false;
 }
@@ -201,7 +202,7 @@ class LZStorage {
                 }
             } else {
                 // Else set the value in cookie
-                setCookie(key, savedValue, (isSession ? Infinity : undefined));
+                this.setCookie(key, savedValue, (isSession ? Infinity : undefined));
             }
         } else {
             if (this.config.debug) {
@@ -218,14 +219,14 @@ class LZStorage {
                     window.localStorage.removeItem(key);
                     window.sessionStorage.removeItem(key);
                     // Try to remove from cookie as well and return the combined result
-                    return !window.localStorage.key(key) || !window.sessionStorage.key(key) || removeCookie(key);
+                    return !window.localStorage.key(key) || !window.sessionStorage.key(key) || this.removeCookie(key);
                 } catch (e) {
                     if (this.config.debug) {
                         _err(e);
                     }
                 }
             }
-            return removeCookie(key);
+            return this.removeCookie(key);
         } else {
             if (this.config.debug) {
                 _log(messages.params);
@@ -261,7 +262,7 @@ class LZStorage {
                 }
             }
             // Complete the search by looking up the key in cookie
-            const cookieValue = getCookie(key);
+            const cookieValue = this.getCookie(key);
             if (cookieValue) {
                 returnValue.push({
                     value: cookieValue,
@@ -381,7 +382,7 @@ class LZStorage {
                     this.set(key, value, store === 'sessionStorage');
                 }
                 if (store === 'cookie') {
-                    setCookie(key, value);
+                    this.setCookie(key, value);
                 }
             });
         } else {

@@ -663,7 +663,7 @@
       deletedCookieString = "".concat(key, "=; expires=Thu, 01 Jan 1970 00:00:00 UTC").concat(cookieDomain, "; path=").concat(path);
       document.cookie = deletedCookieString; // Check updated value to get deletion status
 
-      return !_getCookie(key).length;
+      return !_getCookie.apply(this, key).length;
     }
 
     return false;
@@ -742,7 +742,7 @@
             }
           } else {
             // Else set the value in cookie
-            _setCookie(key, savedValue, isSession ? Infinity : undefined);
+            this.setCookie(key, savedValue, isSession ? Infinity : undefined);
           }
         } else {
           if (this.config.debug) {
@@ -763,7 +763,7 @@
               window.localStorage.removeItem(key);
               window.sessionStorage.removeItem(key); // Try to remove from cookie as well and return the combined result
 
-              return !window.localStorage.key(key) || !window.sessionStorage.key(key) || _removeCookie(key);
+              return !window.localStorage.key(key) || !window.sessionStorage.key(key) || this.removeCookie(key);
             } catch (e) {
               if (this.config.debug) {
                 _err(e);
@@ -771,7 +771,7 @@
             }
           }
 
-          return _removeCookie(key);
+          return this.removeCookie(key);
         } else {
           if (this.config.debug) {
             _log(messages.params);
@@ -819,7 +819,7 @@
           } // Complete the search by looking up the key in cookie
 
 
-          var cookieValue = _getCookie(key);
+          var cookieValue = this.getCookie(key);
 
           if (cookieValue) {
             returnValue.push({
@@ -977,7 +977,7 @@
             }
 
             if (store === 'cookie') {
-              _setCookie(key, value);
+              _this3.setCookie(key, value);
             }
           });
         } else {
