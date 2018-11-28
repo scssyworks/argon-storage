@@ -663,7 +663,7 @@
       deletedCookieString = "".concat(key, "=; expires=Thu, 01 Jan 1970 00:00:00 UTC").concat(cookieDomain, "; path=").concat(path);
       document.cookie = deletedCookieString; // Check updated value to get deletion status
 
-      return !_getCookie.apply(this, key).length;
+      return !_getCookie.apply(this, [key]).length;
     }
 
     return false;
@@ -680,10 +680,10 @@
 
   function _resetCookie(key, value, exp, path, domain) {
     // Remove the existing cookie
-    _removeCookie.apply(this, key, path, domain); // Set a new cookie with same name
+    _removeCookie.apply(this, [key, path, domain]); // Set a new cookie with same name
 
 
-    _setCookie.apply(this, key, value, exp, path, domain);
+    _setCookie.apply(this, [key, value, exp, path, domain]);
   }
 
   var LZStorage =

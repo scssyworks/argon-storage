@@ -141,7 +141,7 @@ function removeCookie() {
         document.cookie = deletedCookieString;
         // Check updated value to get deletion status
 
-        return !getCookie.apply(this, key).length;
+        return !getCookie.apply(this, [key]).length;
     }
     return false;
 }
@@ -156,9 +156,9 @@ function removeCookie() {
  */
 function resetCookie(key, value, exp, path, domain) {
     // Remove the existing cookie
-    removeCookie.apply(this, key, path, domain);
+    removeCookie.apply(this, [key, path, domain]);
     // Set a new cookie with same name
-    setCookie.apply(this, key, value, exp, path, domain);
+    setCookie.apply(this, [key, value, exp, path, domain]);
 }
 
 class LZStorage {
