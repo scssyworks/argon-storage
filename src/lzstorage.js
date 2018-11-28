@@ -105,11 +105,10 @@ function getCookie() {
             // If yes then return its corresponding value
             let returnValue = '';
             allCookies.forEach(c => {
-                c = c.trim(); // Trim the key value pair to remove extra spaces
                 if (c.indexOf(`${key}=`) > -1) {
                     // Return the value substring
                     if (this.config.compression) {
-                        returnValue = decompress(c.substring(`${key}=`.length, c.length).trim());
+                        returnValue = decompress(c.substring(`${key}=`.length, c.length)).trim();
                     } else {
                         returnValue = c.substring(`${key}=`.length, c.length).trim();
                     }

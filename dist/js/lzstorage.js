@@ -618,12 +618,10 @@
         // If yes then return its corresponding value
         var returnValue = '';
         allCookies.forEach(function (c) {
-          c = c.trim(); // Trim the key value pair to remove extra spaces
-
           if (c.indexOf("".concat(key, "=")) > -1) {
             // Return the value substring
             if (_this.config.compression) {
-              returnValue = fromUTF16(c.substring("".concat(key, "=").length, c.length).trim());
+              returnValue = fromUTF16(c.substring("".concat(key, "=").length, c.length)).trim();
             } else {
               returnValue = c.substring("".concat(key, "=").length, c.length).trim();
             }
