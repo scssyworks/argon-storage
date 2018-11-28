@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.lzstorage = factory());
+  (global.LZStorage = factory());
 }(this, (function () { 'use strict';
 
   function _typeof(obj) {
@@ -1000,15 +1000,9 @@
     }]);
 
     return LZStorage;
-  }(); // Default instance
+  }();
 
-
-  var lzstorage = new LZStorage();
-  var lzstorage$1 = _objectSpread({}, lzstorage, {
-    LZStorage: LZStorage
-  });
-
-  return lzstorage$1;
+  return LZStorage;
 
 })));
 //# sourceMappingURL=lzstorage.js.map

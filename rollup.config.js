@@ -8,7 +8,7 @@ export default [
             file: "dist/js/lzstorage.js",
             sourcemap: true,
             format: "umd",
-            name: "lzstorage"
+            name: "LZStorage"
         },
         plugins: [
             babel({
@@ -21,7 +21,7 @@ export default [
         output: {
             file: "dist/js/lzstorage.min.js",
             format: "umd",
-            name: "lzstorage"
+            name: "LZStorage"
         },
         plugins: [
             babel({

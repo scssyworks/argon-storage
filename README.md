@@ -19,16 +19,18 @@ lzstorage.get(...);
 
 2. Using module bundler
 ```js
-import lzstorage from "lzstorage";
+import LZStorage from "lzstorage";
+const lzstorage = new LZStorage();
 lzstorage.get(...);
 ```
 ```js
 const lzstorage = require("lzstorage");
+const lzstorage = new LZStorage();
 lzstorage.get(...);
 ```
 
 # Enable compression
-lzstorage does not enable compression by default. To enable compression you need to create a new instance of LZStorage as follows:
+lzstorage does not enable compression by default. To enable compression you need to create am instance of LZStorage as follows:
 ```js
 const lzswc = new lzstorage.LZStorage({
   compression: true
@@ -38,7 +40,7 @@ const lzswc = new lzstorage.LZStorage({
 # Enable debugging
 To enable debug mode you need to pass ``debug: true`` as a parameter to LZStorage constructor.
 ```js
-const lzswc = new lzstorage.LZStorage({
+const lzswdebug = new lzstorage.LZStorage({
   debug: true
 });
 ```

@@ -401,10 +401,4 @@ class LZStorage {
     }
 }
 
-// Default instance
-const lzstorage = new LZStorage();
-
-export default {
-    ...lzstorage,
-    LZStorage
-};
+export default LZStorage;
