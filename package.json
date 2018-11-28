@@ -1,6 +1,6 @@
 {
   "name": "lzstorage",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "LZStorage extends default storage API to resolve cross browser compatibility issues",
   "main": "dist/js/lzstorage.js",
   "module": "src/lzstorage.js",
