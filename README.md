@@ -10,9 +10,10 @@ npm install --save lzstorage
 Common storage can be used in following ways:
 
 1. Using script tag
-```js
+```script
 <script src="lzstorage.js"></script>
 <script>
+const lzstorage = new LZStorage();
 lzstorage.get(...);
 </script>
 ```
