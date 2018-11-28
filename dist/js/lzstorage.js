@@ -616,18 +616,20 @@
       if (allCookies.length) {
         // Check if any one key value pair matches the key
         // If yes then return its corresponding value
+        var returnValue = '';
         allCookies.forEach(function (c) {
           c = c.trim(); // Trim the key value pair to remove extra spaces
 
           if (c.indexOf("".concat(key, "=")) > -1) {
             // Return the value substring
             if (_this.config.compression) {
-              return fromUTF16(c.substring("".concat(key, "=").length, c.length).trim());
+              returnValue = fromUTF16(c.substring("".concat(key, "=").length, c.length).trim());
             }
 
-            return c.substring("".concat(key, "=").length, c.length).trim();
+            returnValue = c.substring("".concat(key, "=").length, c.length).trim();
           }
         });
+        return returnValue;
       }
     }
 
@@ -818,6 +820,13 @@
 
 
           var cookieValue = _getCookie(key);
+
+          if (cookieValue) {
+            returnValue.push({
+              value: cookieValue,
+              storage: 'cookie'
+            });
+          } // Return the combined results
           // Make sure that parsable data is parsed before the actual results are send
 
 

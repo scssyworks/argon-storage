@@ -103,16 +103,18 @@ function getCookie() {
         if (allCookies.length) {
             // Check if any one key value pair matches the key
             // If yes then return its corresponding value
+            let returnValue = '';
             allCookies.forEach(c => {
                 c = c.trim(); // Trim the key value pair to remove extra spaces
                 if (c.indexOf(`${key}=`) > -1) {
                     // Return the value substring
                     if (this.config.compression) {
-                        return decompress(c.substring(`${key}=`.length, c.length).trim());
+                        returnValue = decompress(c.substring(`${key}=`.length, c.length).trim());
                     }
-                    return c.substring(`${key}=`.length, c.length).trim();
+                    returnValue = c.substring(`${key}=`.length, c.length).trim();
                 }
             });
+            return returnValue;
         }
     }
     return '';
