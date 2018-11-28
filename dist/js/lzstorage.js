@@ -624,9 +624,9 @@
             // Return the value substring
             if (_this.config.compression) {
               returnValue = fromUTF16(c.substring("".concat(key, "=").length, c.length).trim());
+            } else {
+              returnValue = c.substring("".concat(key, "=").length, c.length).trim();
             }
-
-            returnValue = c.substring("".concat(key, "=").length, c.length).trim();
           }
         });
         return returnValue;

@@ -110,8 +110,9 @@ function getCookie() {
                     // Return the value substring
                     if (this.config.compression) {
                         returnValue = decompress(c.substring(`${key}=`.length, c.length).trim());
+                    } else {
+                        returnValue = c.substring(`${key}=`.length, c.length).trim();
                     }
-                    returnValue = c.substring(`${key}=`.length, c.length).trim();
                 }
             });
             return returnValue;
