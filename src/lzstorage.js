@@ -105,12 +105,13 @@ function getCookie() {
             // If yes then return its corresponding value
             let returnValue = '';
             allCookies.forEach(c => {
-                if (c.indexOf(`${key}=`) > -1) {
+                const keyIndexOf = c.indexOf(`${key}=`);
+                if (keyIndexOf > -1) {
                     // Return the value substring
                     if (this.config.compression) {
-                        returnValue = decompress(c.substring(`${key}=`.length, c.length)).trim();
+                        returnValue = decompress(c.substring((keyIndexOf + `${key}=`.length), c.length)).trim();
                     } else {
-                        returnValue = c.substring(`${key}=`.length, c.length).trim();
+                        returnValue = c.substring((keyIndexOf + `${key}=`.length), c.length).trim();
                     }
                 }
             });
