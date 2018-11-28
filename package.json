@@ -1,10 +1,10 @@
 {
-  "name": "cstorage",
-  "version": "3.0.5",
-  "description": "JQuery storage extends default storage API to resolve cross browser compatibility issues",
-  "main": "dist/js/cstorage.js",
-  "module": "src/cstorage.js",
-  "types": "src/cstorage.d.ts",
+  "name": "lzstorage",
+  "version": "1.0.0",
+  "description": "LZStorage extends default storage API to resolve cross browser compatibility issues",
+  "main": "dist/js/lzstorage.js",
+  "module": "src/lzstorage.js",
+  "types": "src/lzstorage.d.ts",
   "scripts": {
     "build": "rollup -c"
   },
@@ -14,17 +14,20 @@
   },
   "keywords": [
     "storage",
-    "cstorage",
+    "lzstorage",
     "localStorage",
     "sessionStorage",
-    "cookies"
+    "cookies",
+    "lzw",
+    "lzw-compression",
+    "compression"
   ],
   "author": "Sachin Singh",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/scssyworks/cstorage/issues"
+    "url": "https://github.com/scssyworks/lzstorage/issues"
   },
-  "homepage": "https://github.com/scssyworks/cstorage#readme",
+  "homepage": "https://github.com/scssyworks/lzstorage#readme",
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",

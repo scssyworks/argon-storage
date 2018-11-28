@@ -2,8 +2,11 @@
  * JQuery storage extends default storage API to resolve cross-browser issues
  * @author       Sachin Singh
  * @dependencies jQuery 1.11+
- * @date         26/05/2018
+ * @date         28/11/2018
  */
+
+import { toUTF16 as compress, fromUTF16 as decompress } from './modules/utf16';
+
 const messages = {
     params: 'Insufficient parameters'
 };
@@ -79,8 +82,8 @@ function setCookie() {
             secureCookieFlag = '; secure';
         }
         // Set the cookie value
-        document.cookie = `${key}=${updateValue}${expires}${cookieDomain}${cookiePath}${secureCookieFlag}`;
-    } else if (this.config && this.config.debug) {
+        document.cookie = `${key}=${((this.config.compression) ? compress(updateValue) : updateValue)}${expires}${cookieDomain}${cookiePath}${secureCookieFlag}`;
+    } else if (this.config.debug) {
         console.log(messages.params);
     }
 }
@@ -100,13 +103,16 @@ function getCookie() {
         if (allCookies.length) {
             // Check if any one key value pair matches the key
             // If yes then return its corresponding value
-            for (let c of allCookies) {
+            allCookies.forEach(c => {
                 c = c.trim(); // Trim the key value pair to remove extra spaces
                 if (c.indexOf(`${key}=`) > -1) {
                     // Return the value substring
+                    if (this.config.compression) {
+                        return decompress(c.substring(`${key}=`.length, c.length).trim());
+                    }
                     return c.substring(`${key}=`.length, c.length).trim();
                 }
-            }
+            });
         }
     }
     return '';
@@ -146,16 +152,15 @@ function removeCookie() {
  */
 function resetCookie(key, value, exp, path, domain) {
     // Remove the existing cookie
-    removeCookie(key, path, domain);
+    removeCookie.apply(this, key, path, domain);
     // Set a new cookie with same name
-    setCookie(key, value, exp, path, domain);
+    setCookie.apply(this, key, value, exp, path, domain);
 }
 
-const store = {
-    config: {
-        // To enable or disable console logging
-        debug: false
-    },
+class LZStorage {
+    constructor(config = {}) {
+        this.config = config;
+    }
     available() {
         try {
             // If localStorage object is missing or setItem does not function properly on localStorage (e.g. Safari incognito)
@@ -169,7 +174,7 @@ const store = {
             }
             return false;
         }
-    },
+    }
     set() {
         if (arguments.length > 1) {
             const [key, value, isSession = false] = arguments;
@@ -182,7 +187,10 @@ const store = {
             // If storage is available, set the value in local or session storage based on flag
             if (this.available()) {
                 try {
-                    window[isSession ? 'sessionStorage' : 'localStorage'].setItem(key, savedValue);
+                    window[isSession ? 'sessionStorage' : 'localStorage'].setItem(
+                        key,
+                        (this.config.compression) ? compress(savedValue) : savedValue
+                    );
                 } catch (e) {
                     if (this.config.debug) {
                         _err(e);
@@ -197,7 +205,7 @@ const store = {
                 _log(messages.params);
             }
         }
-    },
+    }
     remove() {
         if (arguments.length > 0) {
             const [key] = arguments;
@@ -220,7 +228,7 @@ const store = {
                 _log(messages.params);
             }
         }
-    },
+    }
     getAll() {
         if (arguments.length > 0) {
             const [key, isSession = false] = arguments;
@@ -238,7 +246,7 @@ const store = {
                     searchIn.forEach((type) => {
                         if (_hasOwn.call(window[type], key)) {
                             returnValue.push({
-                                value: window[type].getItem(key),
+                                value: (this.config.compression) ? decompress(window[type].getItem(key)) : window[type].getItem(key),
                                 storage: type
                             });
                         }
@@ -271,7 +279,7 @@ const store = {
             });
         }
         return [];
-    },
+    }
     get() {
         if (arguments.length > 0) {
             const [key, isSession = false] = arguments;
@@ -311,7 +319,7 @@ const store = {
                 _log(messages.params);
             }
         }
-    },
+    }
     update() {
         // This method has been revamped to treat different values differently and allow
         // more control over how we want to update the value with least amount of code
@@ -325,7 +333,6 @@ const store = {
         // Also, this method always runs an update even if nothing is changed. Therefore
         // Use it only if you really want to update something
         if (arguments.length === 2) {
-            const self = this;
             // Make sure that both arguments are passed
             const [key, callback] = arguments;
             // Get all the values
@@ -368,7 +375,7 @@ const store = {
             // Write back all the values to their destinations
             values.forEach(({ value, storage: store }) => {
                 if (['sessionStorage', 'localStorage'].indexOf(store) > -1) {
-                    self.set(key, value, store === 'sessionStorage');
+                    this.set(key, value, store === 'sessionStorage');
                 }
                 if (store === 'cookie') {
                     setCookie(key, value);
@@ -380,12 +387,24 @@ const store = {
             }
         }
     }
-};
+    setCookie() {
+        return setCookie.apply(this, arguments);
+    }
+    getCookie() {
+        return getCookie.apply(this, arguments);
+    }
+    removeCookie() {
+        return removeCookie.apply(this, arguments);
+    }
+    resetCookie() {
+        return resetCookie.apply(this, arguments);
+    }
+}
+
+// Default instance
+const lzstorage = new LZStorage();
 
 export default {
-    ...store,
-    setCookie,
-    getCookie,
-    removeCookie,
-    resetCookie
+    ...lzstorage,
+    LZStorage
 };
