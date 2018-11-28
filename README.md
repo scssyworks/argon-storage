@@ -31,7 +31,7 @@ lzstorage.get(...);
 ```
 
 # Enable compression
-lzstorage does not enable compression by default. To enable compression you need to create am instance of LZStorage as follows:
+lzstorage does not enable compression by default. To enable compression you need to create an instance of LZStorage as follows:
 ```js
 const lzswc = new lzstorage.LZStorage({
   compression: true
