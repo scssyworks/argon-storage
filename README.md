@@ -33,7 +33,7 @@ lzstorage.get(...);
 # Enable compression
 lzstorage does not enable compression by default. To enable compression you need to create an instance of LZStorage as follows:
 ```js
-const lzswc = new lzstorage.LZStorage({
+const lzswc = new LZStorage({
   compression: true
 });
 ```
@@ -41,7 +41,7 @@ const lzswc = new lzstorage.LZStorage({
 # Enable debugging
 To enable debug mode you need to pass ``debug: true`` as a parameter to LZStorage constructor.
 ```js
-const lzswdebug = new lzstorage.LZStorage({
+const lzswdebug = new LZStorage({
   debug: true
 });
 ```
@@ -83,7 +83,7 @@ Using ``set``:
 ```js
 lzstorage.set('profile', { name: "Joanne", age: 26 });
 // Updating the age to 27
-lzstorage.set('profile', { name: "Joanne", age: 27 }); // You have re-write the entire object
+lzstorage.set('profile', { name: "Joanne", age: 27 }); // You have to re-write the entire object
 ```
 
 Using ``update``:
@@ -147,7 +147,7 @@ Using ``set``:
 ```js
 lzstorage.set('profile', { name: 'Joanne' });
 lzstorage.setCookie('profile', { name: 'Adam' });
-// Add age = 27 to both profiles currently stored in different stores
+// Add age = 27 to first profile and 30 to second profile currently stored in different stores
 lzstorage.set('profile', { name: 'Joanne', age: 27 });
 lzstorage.setCookie('profile', { name: 'Adam', age: 30 });
 ```
@@ -163,7 +163,7 @@ lzstorage.update('profile', (...args) => {
 });
 ```
 
-Update is useful when data sets are large and you wisth to update only a small chunk.
+Update is useful when data sets are large and you wish to update only a small chunk.
 
 # setCookie
 To create a cookie
