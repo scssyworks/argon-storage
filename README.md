@@ -1,5 +1,5 @@
 # LZStorage
-LZStorage combines different storage types (local, session, and cookie) and provides a cross browser wrapper to store and retrieve data in an optimal manner. LZStorage implements <a href="https://github.com/pieroxy/lz-string">Pieroxy's</a> LZ compression algorithm to compress data while saving it in local storage.
+LZStorage combines different storage types (local, session, and cookie) and provides a cross browser wrapper to store and retrieve data. LZStorage implements <a href="https://github.com/pieroxy/lz-string">Pieroxy's</a> LZ compression algorithm to compress data while saving it in storage.
 
 # Installation
 ```js
