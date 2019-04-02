@@ -194,4 +194,4 @@ lzstorage.resetCookie(key, value[, expiry][, path][, domain]);
 # Summing up
 Common storage provides with a robust and cross browser way to manage HTML5 storage. However, it doesn't not overcome certain limitations like storage size and availability. If HTML5 storage is not available, there is a fallback of cookie storage, but we know that cookie storage is limited in terms of size.
 
-To overcome size limitation we are working on a version 4 which introduces lossless compression. To checkout the progress you can switch to feature/v4 branch.
+To overcome size limitation we have provided option to compress data.
