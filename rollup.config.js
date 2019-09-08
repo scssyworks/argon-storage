@@ -1,5 +1,5 @@
 import babel from "rollup-plugin-babel";
-import { uglify } from "rollup-plugin-uglify";
+import { terser } from "rollup-plugin-terser";
 
 export default [
     {
@@ -8,7 +8,7 @@ export default [
             file: "dist/js/lzstorage.js",
             sourcemap: true,
             format: "umd",
-            name: "LZStorage"
+            name: "lzs"
         },
         plugins: [
             babel({
@@ -21,13 +21,13 @@ export default [
         output: {
             file: "dist/js/lzstorage.min.js",
             format: "umd",
-            name: "LZStorage"
+            name: "lzs"
         },
         plugins: [
             babel({
                 exclude: "node_modules/**"
             }),
-            uglify()
+            terser()
         ]
     }
 ]

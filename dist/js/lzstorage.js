@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.LZStorage = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = global || self, factory(global.lzs = {}));
+}(this, function (exports) { 'use strict';
 
   function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -40,68 +40,220 @@
     return Constructor;
   }
 
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
+  /**
+   * Returns default if original is undefined
+   * @param {*} value Original value
+   * @param {*} defaultValue Default value
+   */
+  function setDefault(value, defaultValue) {
+    if (typeof value === 'undefined') {
+      return defaultValue;
     }
 
-    return obj;
+    return value;
   }
+  /**
+   * Safely trims the value
+   * @param {*} value Any value
+   */
 
-  function _objectSpread(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-      var ownKeys = Object.keys(source);
+  function trim(value) {
+    return typeof value === 'string' ? value.trim() : '';
+  }
+  /* eslint-disable */
 
-      if (typeof Object.getOwnPropertySymbols === 'function') {
-        ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
-          return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-        }));
-      }
+  /**
+   * Inner loop function for assign
+   * @private
+   * @param {object} ref Argument object
+   * @param {object} target First object
+   */
 
-      ownKeys.forEach(function (key) {
-        _defineProperty(target, key, source[key]);
+  function loopFunc(ref, target) {
+    if (ref != null && _typeof(ref) === 'object') {
+      Object.keys(ref).forEach(function (key) {
+        target[key] = ref[key];
       });
+    }
+  }
+  /**
+   * Polyfill for Object.assign only smaller and with less features
+   * @private
+   * @returns {object}
+   */
+
+
+  function assign() {
+    var i = 0;
+    var target = _typeof(arguments[0]) !== 'object' || arguments[0] == null ? {} : arguments[0];
+
+    for (i = 1; i < arguments.length; i++) {
+      loopFunc(arguments[i], target);
     }
 
     return target;
   }
+  /* eslint-enable */
 
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+  /**
+   * Loops over an array like object
+   * @param {object} arrayObj Array or array like object
+   * @param {function} callback Callback function
+   */
+
+  function each(arrayObj, callback) {
+    if (arrayObj && arrayObj.length) {
+      for (var index = 0; index < arrayObj.length; index += 1) {
+        if (typeof callback === 'function') {
+          var continueTheLoop = callback.apply(arrayObj, [arrayObj[index], index]);
+
+          if (typeof continueTheLoop === 'boolean') {
+            if (continueTheLoop) {
+              continue;
+            } else {
+              break;
+            }
+          }
+        }
+      }
+    }
   }
+  /**
+   * Attempts to parse a string value if it can potentially be an object
+   * @param {any} value Value
+   */
 
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
+  function tryParse(value) {
+    try {
+      return JSON.parse(value);
+    } catch (e) {
+      return value;
     }
   }
 
-  function _iterableToArray(iter) {
-    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-  }
+  var loc = window.location;
+  var ls = window.localStorage;
+  var ss = window.sessionStorage;
+  var hasOwn = Object.prototype.hasOwnProperty;
 
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance");
+  var MAX_END_DATE = 'Thu, 31 Dec 2037 00:00:00 GMT';
+  var COOKIE_DEL_DATE = 'Thu, 01 Jan 1970 00:00:00 UTC';
+  var MILLISECOND_MULTIPLIER = 24 * 60 * 60 * 1000;
+  var LOCAL_ENV = ['localhost', '0.0.0.0', '127.0.0.1', null];
+  var types = {
+    SS: 'sessionStorage',
+    LS: 'localStorage',
+    CC: 'cookie'
+  };
+
+  /**
+   * Sets user cookie
+   * @param {string} key name of cookie
+   * @param {string} value cookie value
+   * @param {string} exp cookie expiry
+   * @param {string} path url path
+   * @param {string} domain supported domain
+   * @param {boolean} isSecure Sets security flag
+   */
+
+  function setCookie(key, value, expiryDays, path, domain, isSecure) {
+    if (key && typeof value !== 'undefined') {
+      path = setDefault(path, '/');
+      domain = setDefault(domain, loc.hostname);
+      var transformedValue = value;
+
+      if (_typeof(value) === 'object' && value) {
+        transformedValue = JSON.stringify(value);
+      }
+
+      var expiryDate = new Date();
+
+      if (typeof expiryDate === 'number') {
+        if (expiryDays === Infinity) {
+          expiryDate = new Date(MAX_END_DATE);
+        } else {
+          expiryDate.setTime(expiryDate.getTime() + expiryDays * MILLISECOND_MULTIPLIER);
+        }
+      }
+
+      var expires = expiryDays ? "; expires=".concat(expiryDate.toUTCString()) : '';
+      var cookiePath = "; path=".concat(path.trim());
+      var cookieDomain = LOCAL_ENV.indexOf(domain) === -1 ? "; domain=".concat(domain.trim()) : '';
+      var secureFlag = (typeof isSecure === 'boolean' && isSecure || typeof isSecure === 'undefined') && loc.protocol === 'https:' ? '; secure' : '';
+      document.cookie = "".concat(key, " = ").concat(transformedValue).concat(expires).concat(cookieDomain).concat(cookiePath).concat(secureFlag);
+    }
+  }
+  /**
+   * Get's cookie value
+   * @param {string} key Key
+   * @param {boolean} trimResult Flag to trim the value
+   */
+
+  function getCookie(key, trimResult) {
+    if (key) {
+      var cookieStr = decodeURIComponent(document.cookie);
+      var value = '';
+      each(cookieStr.split(';'), function (cookiePair) {
+        var keyPart = "".concat(key, "=");
+        var indexOfKey = cookiePair.indexOf(keyPart);
+
+        if (indexOfKey > -1) {
+          value = cookiePair.substring(indexOfKey + keyPart.length, cookiePair.length);
+
+          if (trimResult) {
+            value = trim(value);
+          }
+
+          return false;
+        }
+      });
+      return value;
+    }
+
+    return '';
+  }
+  /**
+   * Returns all cookies
+   * @param {object|string} matchRegex Regex to filter cookie values
+   */
+
+  function getAllCookies(matchRegex) {
+    return decodeURIComponent(document.cookie).split(';').map(function (cookiePair) {
+      var keyValuePair = cookiePair.split('=');
+      var key = trim(keyValuePair[0]);
+      var value = keyValuePair[1];
+      return {
+        key: key,
+        value: value
+      };
+    }).filter(function (obj) {
+      return !!obj.key.match(matchRegex);
+    });
+  }
+  /**
+   * Removes a cookie
+   * @param {string} key name of cookie
+   * @param {string} path url path
+   * @param {string} domain supported domain
+   */
+
+  function removeCookie(key, path, domain) {
+    if (key) {
+      path = setDefault(path, '/');
+      domain = setDefault(domain, loc.hostname);
+      var cookieDomain = LOCAL_ENV.indexOf(domain) === -1 ? "; domain=".concat(domain.trim()) : '';
+      var deletedCookieString = "".concat(key, "=; expires=").concat(COOKIE_DEL_DATE).concat(cookieDomain, "; path=").concat(path);
+      document.cookie = deletedCookieString;
+      return !getCookie.apply(this, [key]).length;
+    }
+
+    return false;
   }
 
   var f = String.fromCharCode;
 
-  function _hasOwn(ob, key) {
-    return Object.prototype.hasOwnProperty.call(ob, key);
-  }
-
   function _updateContext(context, bitsPerChar, getCharFromInt) {
-    if (_hasOwn(context.context_dictionaryToCreate, context.context_w)) {
+    if (hasOwn.call(context.context_dictionaryToCreate, context.context_w)) {
       if (context.context_w.charCodeAt(0) < 256) {
         for (var i = 0; i < context.context_numBits; i++) {
           context.context_data_val = context.context_data_val << 1;
@@ -225,14 +377,14 @@
     for (var ii = 0; ii < uncompressed.length; ii += 1) {
       context.context_c = uncompressed.charAt(ii);
 
-      if (!_hasOwn(context.context_dictionary, context.context_c)) {
+      if (!hasOwn.call(context.context_dictionary, context.context_c)) {
         context.context_dictionary[context.context_c] = context.context_dictSize++;
         context.context_dictionaryToCreate[context.context_c] = true;
       }
 
       context.context_wc = context.context_w + context.context_c;
 
-      if (_hasOwn(context.context_dictionary, context.context_wc)) {
+      if (hasOwn.call(context.context_dictionary, context.context_wc)) {
         context.context_w = context.context_wc;
       } else {
         _updateContext(context, bitsPerChar, getCharFromInt);
@@ -493,525 +645,173 @@
     });
   }
 
-  var messages = {
-    params: 'Insufficient parameters'
-  };
-  var _hasOwn$1 = Object.prototype.hasOwnProperty;
   /**
-   * Safety method for console logging
-   * @param  {...any} args console arguments
+   * Tests availability of storage API
    */
 
-  function _log() {
-    if (typeof console !== "undefined") {
-      var _console;
-
-      (_console = console).log.apply(_console, arguments);
+  function isAvailable() {
+    try {
+      ls.setItem('test', 'test');
+      ls.removeItem('test');
+      return true;
+    } catch (e) {
+      return false;
     }
   }
   /**
-   * Safety method for console logging
-   * @param  {...any} args console arguments
+   * Sets storage value
+   * @param {string} key Key
+   * @param {string} value Value
+   * @param {string} isSession Flag to store in session storage
    */
 
 
-  function _err() {
-    if (typeof console !== "undefined") {
-      var _console2;
-
-      (_console2 = console).error.apply(_console2, arguments);
-    }
-  }
-  /**
-   * Check if passed value is a pure object
-   * @param {*} key Any type of value which needs to be checked if it's an object
-   */
-
-
-  function _isObject(value) {
-    return !Array.isArray(value) && value !== null && _typeof(value) === 'object';
-  }
-  /**
-   * Sets user cookie
-   * @param {string} key name of cookie
-   * @param {string} value cookie value
-   * @param {string} exp cookie expiry
-   * @param {string} path url path
-   * @param {string} domain supported domain
-   */
-
-
-  function _setCookie() {
-    if (arguments.length > 1) {
-      var _arguments = Array.prototype.slice.call(arguments),
-          key = _arguments[0],
-          _arguments$ = _arguments[1],
-          value = _arguments$ === void 0 ? '' : _arguments$,
-          exp = _arguments[2],
-          _arguments$2 = _arguments[3],
-          path = _arguments$2 === void 0 ? '/' : _arguments$2,
-          _arguments$3 = _arguments[4],
-          domain = _arguments$3 === void 0 ? window.location.hostname : _arguments$3;
-
-      var updateValue = value;
-
-      if (value !== null && _typeof(value) === 'object') {
-        updateValue = JSON.stringify(value);
+  function setValue(key, value, isSession) {
+    if (key && typeof value !== 'undefined') {
+      if (_typeof(value) === 'object' && value) {
+        value = JSON.stringify(value);
       }
 
-      var dt = new Date(); // If expiry is specified, then set the correct expiry date
+      if (this.available) {
+        var storageObj = isSession ? ss : ls;
 
-      if (typeof exp === 'number') {
-        // If exp is Infinity value then set a future date of year 2037 which is the estimated date of singularity
-        if (exp === Infinity) {
-          dt = new Date('Thu, 31 Dec 2037 00:00:00 GMT');
-        } else {
-          // Else reset the time to specified expiry date
-          dt.setTime(dt.getTime() + exp * 24 * 60 * 60 * 1000);
+        try {
+          storageObj.setItem(key, this.config.compress ? toUTF16(value) : value);
+        } catch (e) {
+          setCookie(key, value, isSession ? undefined : Infinity);
         }
-      } // Set expiry parameter
-
-
-      var expires = exp ? "; expires=".concat(dt.toUTCString()) : ''; // Set cookie path parameter
-
-      var cookiePath = "; path=".concat(path.trim());
-      var cookieDomain = ''; // IE does not allow localhost domains
-
-      if (['localhost', '127.0.0.1', null].indexOf(domain) === -1) {
-        cookieDomain = "; domain=".concat(domain.trim());
-      } // Mark the cookie as secure if created in secure context
-
-
-      var secureCookieFlag = '';
-
-      if (window.location.protocol === 'https:') {
-        secureCookieFlag = '; secure';
-      } // Set the cookie value
-
-
-      document.cookie = "".concat(key, "=").concat(this.config.compression ? toUTF16(updateValue) : updateValue).concat(expires).concat(cookieDomain).concat(cookiePath).concat(secureCookieFlag);
-    } else if (this.config.debug) {
-      console.log(messages.params);
+      } else {
+        setCookie(key, value, isSession ? undefined : Infinity);
+      }
     }
   }
   /**
-   * Gets cookie value
-   * @param {string} key name of cookie
+   * Gets all saved values from storages
+   * @param {string} key Key
    */
 
 
-  function _getCookie() {
+  function getAllMatched(key) {
     var _this = this;
 
-    if (arguments.length > 0) {
-      var _arguments2 = Array.prototype.slice.call(arguments),
-          key = _arguments2[0]; // Decode the cookie value if it is stored in encoded form
+    var allValues = [];
 
+    try {
+      // Local and Session storage
+      if (this.available) {
+        [ls, ss].forEach(function (storageType) {
+          if (hasOwn.call(storageType, key)) {
+            var _value = storageType.getItem(key);
 
-      var cookieString = decodeURIComponent(document.cookie);
-      var allCookies = null; // Split the cookie string to get individual values
-
-      allCookies = cookieString.split(';');
-
-      if (allCookies.length) {
-        // Check if any one key value pair matches the key
-        // If yes then return its corresponding value
-        var returnValue = '';
-        allCookies.forEach(function (c) {
-          var keyIndexOf = c.indexOf("".concat(key, "="));
-
-          if (keyIndexOf > -1) {
-            // Return the value substring
-            if (_this.config.compression) {
-              returnValue = fromUTF16(c.substring(keyIndexOf + "".concat(key, "=").length, c.length)).trim();
-            } else {
-              returnValue = c.substring(keyIndexOf + "".concat(key, "=").length, c.length).trim();
-            }
+            allValues.push({
+              key: key,
+              value: tryParse(_this.config.compress ? fromUTF16(_value) : _value),
+              type: types[storageType === ls ? 'LS' : 'SS']
+            });
           }
         });
-        return returnValue;
+      } // Cookies
+
+
+      var value = getCookie(key);
+
+      if (value) {
+        allValues.push({
+          key: key,
+          value: tryParse(value),
+          type: types.CC
+        });
       }
+    } catch (e) {
+      throw new TypeError(e.message);
     }
 
-    return '';
+    return allValues;
   }
   /**
-   * Removes a cookie
-   * @param {string} key name of cookie
-   * @param {string} path url path
-   * @param {string} domain supported domain
+   * Removes all keys
+   * @param {object|string} matchRegex Regular expression to match keys to be deleted
    */
 
 
-  function _removeCookie() {
-    if (arguments.length > 0) {
-      var _arguments3 = Array.prototype.slice.call(arguments),
-          key = _arguments3[0],
-          _arguments3$ = _arguments3[1],
-          path = _arguments3$ === void 0 ? '/' : _arguments3$,
-          _arguments3$2 = _arguments3[2],
-          domain = _arguments3$2 === void 0 ? window.location.hostname : _arguments3$2;
-
-      var cookieDomain = '';
-      var deletedCookieString = ''; // IE does not allow localhost domains
-      // Hence check if passed domain is not localhost or null
-
-      if (['localhost', '127.0.0.1', null].indexOf(domain) === -1) {
-        cookieDomain = "; domain=".concat(domain.trim());
+  function deleteKey(key) {
+    try {
+      if (this.available) {
+        [ls, ss].forEach(function (storageType) {
+          storageType.removeItem(key);
+        });
       }
 
-      deletedCookieString = "".concat(key, "=; expires=Thu, 01 Jan 1970 00:00:00 UTC").concat(cookieDomain, "; path=").concat(path);
-      document.cookie = deletedCookieString; // Check updated value to get deletion status
-
-      return !_getCookie.apply(this, [key]).length;
+      return !!this.get(key) || removeCookie(key);
+    } catch (e) {
+      return removeCookie(key);
     }
-
-    return false;
   }
   /**
-   * Resets existing cookie with new expiry
-   * @param {string} key name of cookie
-   * @param {string} value cookie value
-   * @param {string} exp cookie expiry
-   * @param {string} path url path
-   * @param {string} domain supported domain
+   * Storage class
+   * @class LZStorage
    */
 
-
-  function _resetCookie(key, value, exp, path, domain) {
-    // Remove the existing cookie
-    _removeCookie.apply(this, [key, path, domain]); // Set a new cookie with same name
-
-
-    _setCookie.apply(this, [key, value, exp, path, domain]);
-  }
 
   var LZStorage =
   /*#__PURE__*/
   function () {
-    function LZStorage() {
-      var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
+    function LZStorage(config) {
       _classCallCheck(this, LZStorage);
 
-      this.config = config;
+      this.config = assign(config, {
+        compress: false
+      });
+      this.available = isAvailable();
     }
 
     _createClass(LZStorage, [{
-      key: "available",
-      value: function available() {
-        try {
-          // If localStorage object is missing or setItem does not function properly on localStorage (e.g. Safari incognito)
-          // This methos will throw an error which will tell us if storage API is usable
-          localStorage.setItem('test', 'test');
-          localStorage.removeItem('test');
-          return true;
-        } catch (e) {
-          if (this.config.debug) {
-            _log("Storage API is not supported in this environment");
-          }
-
-          return false;
-        }
-      }
-    }, {
       key: "set",
       value: function set() {
-        if (arguments.length > 1) {
-          var _arguments4 = Array.prototype.slice.call(arguments),
-              key = _arguments4[0],
-              value = _arguments4[1],
-              _arguments4$ = _arguments4[2],
-              isSession = _arguments4$ === void 0 ? false : _arguments4$;
-
-          var savedValue = value; // Check if value is stringifiable
-          // All values are stores are string in storages
-
-          if (value !== null && _typeof(value) === 'object') {
-            savedValue = JSON.stringify(value);
-          } // If storage is available, set the value in local or session storage based on flag
-
-
-          if (this.available()) {
-            try {
-              window[isSession ? 'sessionStorage' : 'localStorage'].setItem(key, this.config.compression ? toUTF16(savedValue) : savedValue);
-            } catch (e) {
-              if (this.config.debug) {
-                _err(e);
-              }
-            }
-          } else {
-            // Else set the value in cookie
-            this.setCookie(key, savedValue, isSession ? Infinity : undefined);
-          }
-        } else {
-          if (this.config.debug) {
-            _log(messages.params);
-          }
-        }
-      }
-    }, {
-      key: "remove",
-      value: function remove() {
-        if (arguments.length > 0) {
-          var _arguments5 = Array.prototype.slice.call(arguments),
-              key = _arguments5[0];
-
-          if (this.available()) {
-            try {
-              // Try to remove the value from both the storages
-              window.localStorage.removeItem(key);
-              window.sessionStorage.removeItem(key); // Try to remove from cookie as well and return the combined result
-
-              return !window.localStorage.key(key) || !window.sessionStorage.key(key) || this.removeCookie(key);
-            } catch (e) {
-              if (this.config.debug) {
-                _err(e);
-              }
-            }
-          }
-
-          return this.removeCookie(key);
-        } else {
-          if (this.config.debug) {
-            _log(messages.params);
-          }
-        }
-      }
-    }, {
-      key: "getAll",
-      value: function getAll() {
-        var _this2 = this;
-
-        if (arguments.length > 0) {
-          var _arguments6 = Array.prototype.slice.call(arguments),
-              key = _arguments6[0],
-              _arguments6$ = _arguments6[1],
-              isSession = _arguments6$ === void 0 ? false : _arguments6$;
-
-          var returnValue = [];
-
-          if (this.available()) {
-            try {
-              // Specify where to search for value
-              // session storage is default as it will be searched regardless of flag
-              var searchIn = ['sessionStorage'];
-
-              if (!isSession) {
-                // If session flag is not set expand the search to local storage
-                searchIn.push('localStorage');
-              } // Search for value in all specified storages and combine the results
-
-
-              searchIn.forEach(function (type) {
-                if (_hasOwn$1.call(window[type], key)) {
-                  returnValue.push({
-                    value: _this2.config.compression ? fromUTF16(window[type].getItem(key)) : window[type].getItem(key),
-                    storage: type
-                  });
-                }
-              });
-            } catch (e) {
-              if (this.config.debug) {
-                _err(e);
-              }
-            }
-          } // Complete the search by looking up the key in cookie
-
-
-          var cookieValue = this.getCookie(key);
-
-          if (cookieValue) {
-            returnValue.push({
-              value: cookieValue,
-              storage: 'cookie'
-            });
-          } // Return the combined results
-          // Make sure that parsable data is parsed before the actual results are send
-
-
-          return returnValue.map(function (data) {
-            try {
-              data.value = JSON.parse(data.value);
-            } catch (e) {
-              if (_this2.config.debug) {
-                _log(e);
-              }
-            }
-
-            return data;
-          });
-        }
-
-        return [];
+        return setValue.apply(this, arguments);
       }
     }, {
       key: "get",
       value: function get() {
-        if (arguments.length > 0) {
-          var _arguments7 = Array.prototype.slice.call(arguments),
-              key = _arguments7[0],
-              _arguments7$ = _arguments7[1],
-              isSession = _arguments7$ === void 0 ? false : _arguments7$;
-
-          var valueList = this.getAll(key, isSession); // If not value is returned then return undefined
-
-          if (valueList.length === 0) {
-            return;
-          } // If only one value is returned it means that value was present in only one of the storages
-          // Or the browser supported only one type of storage (probably the cookie store)
-
-
-          if (valueList.length === 1) {
-            return valueList[0].value;
-          } // Else the browser does have value stored either is session or local storage which will get preference over cookie
-          // If stored in all three stores, fetch value based on isSession flag
-
-
-          if (valueList.length === 3) {
-            return valueList.filter(function (valueOb) {
-              return valueOb.storage === (isSession ? 'sessionStorage' : 'localStorage');
-            })[0].value;
-          } // If only two stores are returned, value can be in any two combination of stores:
-          // 1. [localStorage, cookie]
-          // 2. [sessionStorage, cookie]
-          // Get the combination of stores to determine from where the value needs to be fetched
-
-
-          var storageTypes = valueList.map(function (valueOb) {
-            return valueOb.storage;
-          }); // If session flag is true check if value was stored in session storage
-          // If not then return the cookie value
-
-          if (isSession) {
-            if (storageTypes.indexOf('sessionStorage') > -1) {
-              return valueList.filter(function (valueOb) {
-                return valueOb.storage === 'sessionStorage';
-              })[0].value;
-            }
-
-            return valueList.filter(function (valueOb) {
-              return valueOb.storage === 'cookie';
-            })[0].value;
-          } // If session flag is false, cookie value doesn't matter
-          // Check for session or local storage and return the value
-
-
-          return valueList.filter(function (valueOb) {
-            return ['sessionStorage', 'localStorage'].indexOf(valueOb.storage) > -1;
-          })[0].value;
-        } else {
-          if (this.config.debug) {
-            _log(messages.params);
+        var _arguments = arguments;
+        var matched = this.getAll.apply(this, arguments).filter(function (obj) {
+          if (_arguments[1]) {
+            return obj.type === types.SS;
           }
+
+          return true;
+        });
+
+        if (matched.length > 0) {
+          return matched[0].value;
         }
+
+        return;
       }
     }, {
-      key: "update",
-      value: function update() {
-        var _this3 = this;
-
-        // This method has been revamped to treat different values differently and allow
-        // more control over how we want to update the value with least amount of code
-        // required to be written.
-        // For example if value is a JSON object, you can use a callback and return an object
-        // With the only key which requires updation. Rest the method will take care how
-        // the value is updated
-        // :::::Disclaimer:::::
-        // This method is not ideal for updating cookies as it will modify the expiry value
-        // Use it only if you don't care about cookie expiry date
-        // Also, this method always runs an update even if nothing is changed. Therefore
-        // Use it only if you really want to update something
-        if (arguments.length === 2) {
-          // Make sure that both arguments are passed
-          var _arguments8 = Array.prototype.slice.call(arguments),
-              key = _arguments8[0],
-              callback = _arguments8[1]; // Get all the values
-
-
-          var values = this.getAll(key); // Get the updated value
-
-          var updatedValue = null;
-
-          if (typeof callback === 'function') {
-            // It means that the second parameter was passed as a function which can work in number
-            // of ways. It may or may not return a value.
-            // It it returns a value, then directly use that value as an update
-            // Else assume that the data value was modified directly in the stored object
-            updatedValue = callback.apply(void 0, _toConsumableArray(values)); // All values are passed a separate parameters
-          } else if (_typeof(callback) !== undefined) {
-            // It means that the updated value was directly passed to the method
-            try {
-              updatedValue = JSON.parse(callback);
-            } catch (e) {
-              if (this.config.debug) {
-                _err(e);
-              }
-
-              updatedValue = callback;
-            }
-          } // Check if we have a valid updated value
-
-
-          if (updatedValue !== undefined) {
-            // Check if update value is an object and target key also has an object value
-            // In this scenario we need to update the object instead of replacing it
-            values.forEach(function (valueOb) {
-              var value = valueOb.value;
-
-              if (_isObject(value) && _isObject(updatedValue)) {
-                valueOb.value = _objectSpread({}, value, updatedValue);
-              } else {
-                valueOb.value = updatedValue;
-              }
-            });
-          } // Write back all the values to their destinations
-
-
-          values.forEach(function (_ref) {
-            var value = _ref.value,
-                store = _ref.storage;
-
-            if (['sessionStorage', 'localStorage'].indexOf(store) > -1) {
-              _this3.set(key, value, store === 'sessionStorage');
-            }
-
-            if (store === 'cookie') {
-              _this3.setCookie(key, value);
-            }
-          });
-        } else {
-          if (this.config.debug) {
-            _log(messages.params);
-          }
-        }
+      key: "getAll",
+      value: function getAll() {
+        return getAllMatched.apply(this, arguments);
       }
     }, {
-      key: "setCookie",
-      value: function setCookie() {
-        return _setCookie.apply(this, arguments);
-      }
-    }, {
-      key: "getCookie",
-      value: function getCookie() {
-        return _getCookie.apply(this, arguments);
-      }
-    }, {
-      key: "removeCookie",
-      value: function removeCookie() {
-        return _removeCookie.apply(this, arguments);
-      }
-    }, {
-      key: "resetCookie",
-      value: function resetCookie() {
-        return _resetCookie.apply(this, arguments);
+      key: "remove",
+      value: function remove() {
+        return deleteKey.apply(this, arguments);
       }
     }]);
 
     return LZStorage;
   }();
 
-  return LZStorage;
+  exports.LZStorage = LZStorage;
+  exports.compress = toUTF16;
+  exports.decompress = fromUTF16;
+  exports.getAllCookies = getAllCookies;
+  exports.getCookie = getCookie;
+  exports.removeCookie = removeCookie;
+  exports.setCookie = setCookie;
 
-})));
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+}));
 //# sourceMappingURL=lzstorage.js.map

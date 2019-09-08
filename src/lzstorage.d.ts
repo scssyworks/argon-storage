@@ -1,17 +1,22 @@
-export as namespace LZStorage;
-
-export = LZStorage;
-
 declare class LZStorage {
     constructor(config?: Object);
-    available(): boolean;
-    get(key: string): any;
+    available: boolean;
+    get(key: string): boolean;
+    set(key: string, value: any, isSession?: boolean): void;
     getAll(key: string): any;
-    set(key: string, value: any, isSession: boolean): void;
     remove(key: string): boolean;
-    update(key: string, value: any): void;
-    setCookie(key: string, value: any, expiry: string, path: string, domain: string): void;
-    getCookie(key: string): string;
-    removeCookie(key: string): boolean;
-    resetCookie(key: string): void;
 }
+
+declare function setCookie(key: string, value: any, expiryDays?: number, path = '/', domain?: string, secure?: boolean): void;
+
+declare function getCookie(key: string, trim?: boolean): any;
+
+declare function removeCookie(key: string, path = '/', domain?: string): boolean;
+
+declare function getAllCookies(matchRegex?: RegExp | string): Array;
+
+declare function compress(value: string): string;
+
+declare function decompress(value: string): string;
+
+export = { LZStorage, setCookie, getCookie, removeCookie, getAllCookies, compress, decompress };
