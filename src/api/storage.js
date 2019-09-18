@@ -85,13 +85,19 @@ function getAllMatched(key) {
  */
 function deleteKey(key) {
     try {
+        let hasValues = false;
         if (this.available) {
             [ls, ss].forEach(storageType => {
-                storageType.removeItem(key);
+                hasValues = hasValues || !!storageType.getItem(key);
             });
+            if (hasValues) {
+                [ls, ss].forEach(storageType => {
+                    storageType.removeItem(key);
+                });
+            }
         }
-        const removedCookie = removeCookie(key);
-        return (!!this.get(key) || removedCookie);
+        const cookieRemoved = removeCookie(key);
+        return (hasValues || cookieRemoved);
     } catch (e) {
         return removeCookie(key);
     }

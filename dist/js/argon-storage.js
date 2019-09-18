@@ -738,14 +738,22 @@
 
   function deleteKey(key) {
     try {
+      var hasValues = false;
+
       if (this.available) {
         [ls, ss].forEach(function (storageType) {
-          storageType.removeItem(key);
+          hasValues = hasValues || !!storageType.getItem(key);
         });
+
+        if (hasValues) {
+          [ls, ss].forEach(function (storageType) {
+            storageType.removeItem(key);
+          });
+        }
       }
 
-      var removedCookie = removeCookie(key);
-      return !!this.get(key) || removedCookie;
+      var cookieRemoved = removeCookie(key);
+      return hasValues || cookieRemoved;
     } catch (e) {
       return removeCookie(key);
     }
