@@ -55,9 +55,9 @@ compress(value); // Returns compressed value
 decompress(value); // Decompresses compressed value
 ```
 
-# What has changed from version 1 and why?
+# What has changed from version 1?
 
-1. Removed ``store.update``. The implementation was complex and much slower than ``store.set('key', { ...store.get('key'), newValue })``, if you know what I mean. It was not practical to use it in real projects.<br>
+1. Removed ``store.update``. The implementation was complex and much slower and impractical to use in real projects.
 
 2. Cookie related functions are now independent from ``store``. You can now import them separately.<br>
 
