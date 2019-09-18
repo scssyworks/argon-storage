@@ -1,4 +1,4 @@
-declare class LZStorage {
+export default class ArgonStorage {
     constructor(config?: Object);
     available: boolean;
     get(key: string): boolean;
@@ -19,4 +19,4 @@ declare function compress(value: string): string;
 
 declare function decompress(value: string): string;
 
-export = { LZStorage, setCookie, getCookie, removeCookie, getAllCookies, compress, decompress };
+export = { setCookie, getCookie, removeCookie, getAllCookies, compress, decompress };
