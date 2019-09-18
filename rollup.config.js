@@ -3,12 +3,13 @@ import { terser } from "rollup-plugin-terser";
 
 export default [
     {
-        input: "src/lzstorage.js",
+        input: "src/argon-storage.js",
         output: {
-            file: "dist/js/lzstorage.js",
+            file: "dist/js/argon-storage.js",
             sourcemap: true,
             format: "umd",
-            name: "lzs"
+            name: "ArgonStorage",
+            exports: 'named'
         },
         plugins: [
             babel({
@@ -17,11 +18,12 @@ export default [
         ]
     },
     {
-        input: "src/lzstorage.js",
+        input: "src/argon-storage.js",
         output: {
-            file: "dist/js/lzstorage.min.js",
+            file: "dist/js/argon-storage.min.js",
             format: "umd",
-            name: "lzs"
+            name: "ArgonStorage",
+            exports: 'named'
         },
         plugins: [
             babel({

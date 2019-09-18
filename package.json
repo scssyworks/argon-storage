@@ -1,28 +1,28 @@
 {
-  "name": "lzstorage",
+  "name": "argon-storage",
   "version": "1.0.7",
-  "description": "LZStorage extends default storage API to resolve cross browser compatibility issues",
-  "main": "dist/js/lzstorage.js",
-  "module": "dist/js/lzstorage.js",
-  "types": "src/lzstorage.d.ts",
+  "description": "Argon storage extends default storage API to resolve cross browser compatibility issues",
+  "main": "dist/js/argon-storage.js",
+  "module": "src/argon-storage.js",
+  "types": "src/argon-storage.d.ts",
   "scripts": {
     "build": "rollup -c"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/scssyworks/cstorage.git"
+    "url": "git+https://github.com/scssyworks/lzstorage.git"
   },
   "keywords": [
     "storage",
-    "lzstorage",
-    "localStorage",
+    "storage API",
+    "cross-browser",
     "sessionStorage",
+    "localStorage",
     "cookies",
-    "lzw",
     "lzw-compression",
     "compression"
   ],
-  "author": "Sachin Singh",
+  "author": "scssyworks",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/scssyworks/lzstorage/issues"

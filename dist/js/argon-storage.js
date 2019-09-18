@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = global || self, factory(global.lzs = {}));
+  (global = global || self, factory(global.ArgonStorage = {}));
 }(this, function (exports) { 'use strict';
 
   function _typeof(obj) {
@@ -238,13 +238,15 @@
    */
 
   function removeCookie(key, path, domain) {
-    if (key) {
+    var currentValue = getCookie.apply(this, [key]);
+
+    if (key && currentValue.length) {
       path = setDefault(path, '/');
       domain = setDefault(domain, loc.hostname);
       var cookieDomain = LOCAL_ENV.indexOf(domain) === -1 ? "; domain=".concat(domain.trim()) : '';
       var deletedCookieString = "".concat(key, "=; expires=").concat(COOKIE_DEL_DATE).concat(cookieDomain, "; path=").concat(path);
       document.cookie = deletedCookieString;
-      return !getCookie.apply(this, [key]).length;
+      return !trim(getCookie.apply(this, [key])).length;
     }
 
     return false;
@@ -742,30 +744,31 @@
         });
       }
 
-      return !!this.get(key) || removeCookie(key);
+      var removedCookie = removeCookie(key);
+      return !!this.get(key) || removedCookie;
     } catch (e) {
       return removeCookie(key);
     }
   }
   /**
    * Storage class
-   * @class LZStorage
+   * @class ArgonStorage
    */
 
 
-  var LZStorage =
+  var ArgonStorage =
   /*#__PURE__*/
   function () {
-    function LZStorage(config) {
-      _classCallCheck(this, LZStorage);
+    function ArgonStorage(config) {
+      _classCallCheck(this, ArgonStorage);
 
-      this.config = assign(config, {
+      this.config = Object.freeze(assign(config, {
         compress: false
-      });
+      }));
       this.available = isAvailable();
     }
 
-    _createClass(LZStorage, [{
+    _createClass(ArgonStorage, [{
       key: "set",
       value: function set() {
         return setValue.apply(this, arguments);
@@ -800,12 +803,12 @@
       }
     }]);
 
-    return LZStorage;
+    return ArgonStorage;
   }();
 
-  exports.LZStorage = LZStorage;
   exports.compress = toUTF16;
   exports.decompress = fromUTF16;
+  exports.default = ArgonStorage;
   exports.getAllCookies = getAllCookies;
   exports.getCookie = getCookie;
   exports.removeCookie = removeCookie;
@@ -814,4 +817,4 @@
   Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
-//# sourceMappingURL=lzstorage.js.map
+//# sourceMappingURL=argon-storage.js.map

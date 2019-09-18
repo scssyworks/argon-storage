@@ -90,7 +90,8 @@ function deleteKey(key) {
                 storageType.removeItem(key);
             });
         }
-        return (!!this.get(key) || removeCookie(key));
+        const removedCookie = removeCookie(key);
+        return (!!this.get(key) || removedCookie);
     } catch (e) {
         return removeCookie(key);
     }
@@ -98,11 +99,11 @@ function deleteKey(key) {
 
 /**
  * Storage class
- * @class LZStorage
+ * @class ArgonStorage
  */
-export class LZStorage {
+export class ArgonStorage {
     constructor(config) {
-        this.config = assign(config, { compress: false });
+        this.config = Object.freeze(assign(config, { compress: false }));
         this.available = isAvailable();
     }
     set() {

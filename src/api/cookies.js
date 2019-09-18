@@ -83,13 +83,14 @@ export function getAllCookies(matchRegex) {
  * @param {string} domain supported domain
  */
 export function removeCookie(key, path, domain) {
-    if (key) {
+    const currentValue = getCookie.apply(this, [key]);
+    if (key && currentValue.length) {
         path = setDefault(path, '/');
         domain = setDefault(domain, loc.hostname);
         const cookieDomain = LOCAL_ENV.indexOf(domain) === -1 ? `; domain=${domain.trim()}` : '';
         const deletedCookieString = `${key}=; expires=${COOKIE_DEL_DATE}${cookieDomain}; path=${path}`;
         document.cookie = deletedCookieString;
-        return !getCookie.apply(this, [key]).length;
+        return !trim(getCookie.apply(this, [key])).length;
     }
     return false;
 }
