@@ -7,16 +7,16 @@ export default class ArgonStorage {
     remove(key: string): boolean;
 }
 
-declare function setCookie(key: string, value: any, expiryDays?: number, path = '/', domain?: string, secure?: boolean): void;
+declare function setCookie(key: string, value: any, expiryDays?: number, path?: string, domain?: string, secure?: boolean): void;
 
 declare function getCookie(key: string, trim?: boolean): any;
 
-declare function removeCookie(key: string, path = '/', domain?: string): boolean;
+declare function removeCookie(key: string, path?: string, domain?: string): boolean;
 
-declare function getAllCookies(matchRegex?: RegExp | string): Array;
+declare function getAllCookies(matchRegex?: RegExp | string): string[];
 
 declare function compress(value: string): string;
 
 declare function decompress(value: string): string;
 
-export = { setCookie, getCookie, removeCookie, getAllCookies, compress, decompress };
+export { setCookie, getCookie, removeCookie, getAllCookies, compress, decompress };
