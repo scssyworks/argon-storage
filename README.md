@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/scssyworks/lzstorage.svg?branch=master)](https://travis-ci.org/scssyworks/lzstorage)
+
 # Argon Storage (Formerly <a href="https://www.npmjs.com/package/lzstorage">LZStorage</a>)
 
 Argon storage is a cross-browser wrapper for Cookies and Storage API. Argon Storage implements data compression using <a href="https://github.com/pieroxy/lz-string">Pieroxy's</a> LZW algorithm, so that you never run out of storage capacity (esp. mobile devices).
