@@ -1,38 +1,38 @@
 {
-  "name": "lzstorage",
-  "version": "1.0.7",
-  "description": "LZStorage extends default storage API to resolve cross browser compatibility issues",
-  "main": "dist/js/lzstorage.js",
-  "module": "dist/js/lzstorage.js",
-  "types": "src/lzstorage.d.ts",
+  "name": "argon-storage",
+  "version": "2.0.0",
+  "description": "Argon storage extends default storage API to resolve cross browser compatibility issues",
+  "main": "dist/js/argon-storage.js",
+  "module": "src/argon-storage.js",
+  "types": "src/argon-storage.d.ts",
   "scripts": {
     "build": "rollup -c"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/scssyworks/cstorage.git"
+    "url": "git+https://github.com/scssyworks/lzstorage.git"
   },
   "keywords": [
     "storage",
-    "lzstorage",
-    "localStorage",
+    "storage API",
+    "cross-browser",
     "sessionStorage",
+    "localStorage",
     "cookies",
-    "lzw",
     "lzw-compression",
     "compression"
   ],
-  "author": "Sachin Singh",
+  "author": "scssyworks",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/scssyworks/lzstorage/issues"
   },
   "homepage": "https://github.com/scssyworks/lzstorage#readme",
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "rollup": "^0.65.0",
-    "rollup-plugin-babel": "^4.0.2",
-    "rollup-plugin-uglify": "^4.0.0"
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "rollup": "^1.21.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-terser": "^5.1.1"
   }
 }

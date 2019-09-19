@@ -1,197 +1,66 @@
-# LZStorage
-LZStorage combines different storage types (local, session, and cookie) and provides a cross browser wrapper to store and retrieve data. LZStorage implements <a href="https://github.com/pieroxy/lz-string">Pieroxy's</a> LZ compression algorithm to compress data while saving it in storage.
+# Argon Storage (Formerly <a href="https://www.npmjs.com/package/lzstorage">LZStorage</a>)
+
+Argon storage is a cross-browser wrapper for Cookies and Storage API. Argon Storage implements data compression using <a href="https://github.com/pieroxy/lz-string">Pieroxy's</a> LZW algorithm, so that you never run out of storage capacity (esp. mobile devices).
 
 # Installation
-```js
-npm install --save lzstorage
+
+```sh
+npm i argon-storage
 ```
 
-# How does it work?
-Common storage can be used in following ways:
+# How to use?
 
-1. Using script tag
-```script
-<script src="lzstorage.js"></script>
-<script>
-const lzstorage = new LZStorage();
-lzstorage.get(...);
-</script>
-```
-
-2. Using module bundler
-```js
-import LZStorage from "lzstorage";
-const lzstorage = new LZStorage();
-lzstorage.get(...);
-```
-```js
-const lzstorage = require("lzstorage");
-const lzstorage = new LZStorage();
-lzstorage.get(...);
-```
-
-# Enable compression
-lzstorage does not enable compression by default. To enable compression you need to create an instance of LZStorage as follows:
-```js
-const lzswc = new LZStorage({
-  compression: true
-});
-```
-
-# Enable debugging
-To enable debug mode you need to pass ``debug: true`` as a parameter to LZStorage constructor.
-```js
-const lzswdebug = new LZStorage({
-  debug: true
-});
-```
-
-# Storage methods:
-# set
-To set data in HTML5 storage. By default the values are stored in ``localStorage``.
-```js
-lzstorage.set(key, value);
-```
-To set key in session storage (set ``isSession`` flag to ``true`` by passing it as a third prameter)
-```js
-lzstorage.set(key, value[, isSession]);
-```
-If storage is unavailable, the method automatically fallbacks to cookies as alternative storage
-
-# get
-To get value from storage
-```js
-lzstorage.get(key);
-```
-Get method checks all the available storages to get the data. The data is automatically parsed if it is a valid JSON string.
-
-# getAll
-To get data from all stores. The values are returned in a form of array of objects with information such as type of storage used.
-```js
-lzstorage.getAll(key); // --> Returns [{ value: <data value>, storage: '<type of storage>' }, { ... }, { ... }];
-```
-
-# update
-To update the value of an existing key. It is similar to ``set`` except that it gives you more control over how you want to update the data. We have following examples that explain how ``update`` is different from ``set``.
+ES6 modules
 
 ```js
-lzstorage.update(key[, data or callback]);
+import ArgonStorage, { getCookie, setCookie } from 'argon-storage';
+const store = new ArgonStorage();
+const compressedStore = new ArgonStorage({ compress: true }); // Enable compression
+store.set('TestStorage', 'value');
+setCookie('TestCookie', 'cookieValue');
+store.get('TestStorage'); // -> 'value'
+getCookie('TestCookie'); // -> 'cookieValue'
 ```
 
-<b>Example 1: Updating object properties</b><br>
-Using ``set``:
+ES5
+
 ```js
-lzstorage.set('profile', { name: "Joanne", age: 26 });
-// Updating the age to 27
-lzstorage.set('profile', { name: "Joanne", age: 27 }); // You have to re-write the entire object
+const store = new ArgonStorage.default();
+const { getCookie, setCookie } = ArgonStorage;
+...
 ```
 
-Using ``update``:
+# Available methods
+
 ```js
-lzstorage.set('profile', { name: "Joanne", age: 26 });
-// Updating profile by passing only the age
-lzstorage.update('profile', { age: 27 }); // --> Value now becomes { name: "Joanne", age: 27 }
+store.get(key [, isSession]); // Gets storage value from local storage, session storage or cookie (whichever is available)
+
+store.set(key, value [, isSession]); // Stores a value in storage. If storage is unavailable, the value is saved in cookies
+
+store.getAll(key); // Gets list of matching key values from storage and cookies
+
+store.remove(key); // Removes all values that match from storage and cookies. 
+
+
+getCookie(key [, trimResults]); // Get's a cookie value
+
+setCookie(key, value [, expiryInDays][, path][, domain][, isSecure]); // Set's a cookie value
+
+removeCookie(key [, path][, domain]); // Removes a cookie value
+
+getAllCookies([matchRegex]); // Get's a list of all available cookies
+
+compress(value); // Returns compressed value
+
+decompress(value); // Decompresses compressed value
 ```
 
-You can also use syntax below:
-```js
-// 1. Arrow function with implicit return
-lzstorage.update('profile', () => { age: 27 });
-// 2. Arrow function with data passed as value
-lzstorage.update('profile', data => {
-    data.value.age = 27; // Modify existing object
-});
-```
+# What has changed from version 1?
 
-<b>Example 2: Updating arrays</b><br>
-Using ``set``:
-```js
-lzstorage.set('arr', [1,2,3,4]);
-// Insert a new value to array
-lzstorage.set('arr', [1,2,3,4,'Hello']); // <-- Inserts string 'hello'. But you need to pass the entire array in this case
-```
+1. Removed ``store.update``. The implementation was complex and much slower and impractical to use in real projects.
 
-Using ``update``:
-```js
-lzstorage.set('arr', [1,2,3,4]);
-// Insert a new value to array
-lzstorage.update('arr', data => {
-    data.value.push('Hello'); // Just push a new value to existing array
-});
-```
+2. Cookie related functions are now independent from ``store``. You can now import them separately.<br>
 
-<b>Example 3: Updating multiple stores at once</b><br>
-There are chances that your data exists in multiple stores having the same key. Update allows you to modify them all at once
-Using ``set``:
-```js
-lzstorage.set('profile', { name: 'Joanne' });
-lzstorage.setCookie('profile', { name: 'Adam' });
-// Add age = 27 to both profiles currently stored in different stores
-lzstorage.set('profile', { name: 'Joanne', age: 27 });
-lzstorage.setCookie('profile', { name: 'Adam', age: 27 });
-```
+3. Added new functions: ``getAllCookies``, ``compress`` and ``decompress`` for more flexibility.<br>
 
-Using ``update``:
-```js
-lzstorage.set('profile', { name: 'Joanne' });
-lzstorage.setCookie('profile', { name: 'Adam' });
-// Add age = 27 to both profiles currently stored in different stores
-lzstorage.update('profile', { age: 27 }); // <-- This updates all stores at once
-```
-
-More complex example where we want to update different values:
-
-Consider same example as above. This time we are inserting different ages for Joanne and Adam.
-
-Using ``set``:
-```js
-lzstorage.set('profile', { name: 'Joanne' });
-lzstorage.setCookie('profile', { name: 'Adam' });
-// Add age = 27 to first profile and 30 to second profile currently stored in different stores
-lzstorage.set('profile', { name: 'Joanne', age: 27 });
-lzstorage.setCookie('profile', { name: 'Adam', age: 30 });
-```
-
-Using ``update``:
-```js
-lzstorage.set('profile', { name: 'Joanne' });
-lzstorage.setCookie('profile', { name: 'Adam' });
-// Add age = 27 to both profiles currently stored in different stores
-lzstorage.update('profile', (...args) => {
-    args.find(arg => arg.storage === 'localStorage').value.age = 27;
-    args.find(arg => arg.storage === 'cookie').value.age = 30;
-});
-```
-
-Update is useful when data sets are large and you wish to update only a small chunk.
-
-# setCookie
-To create a cookie
-```js
-lzstorage.setCookie(key, value[, expiry][, path][, domain]);
-```
-
-# getCookie
-To get cookie from cookie store
-```js
-lzstorage.getCookie(key, value);
-```
-
-# removeCookie
-To delete a cookie from cookie store
-```js
-lzstorage.removeCookie(key[, path][, domain]);
-```
-
-# resetCookie
-To reset an existing cookie with new data. It is similar to ``setCookie`` except that it deletes existing cookie first.
-```js
-lzstorage.resetCookie(key, value[, expiry][, path][, domain]);
-```
-
-"Reset" allows you to change expiry ,path and domain of existing cookie.
-
-# Summing up
-Common storage provides with a robust and cross browser way to manage HTML5 storage. However, it doesn't not overcome certain limitations like storage size and availability. If HTML5 storage is not available, there is a fallback of cookie storage, but we know that cookie storage is limited in terms of size.
-
-To overcome size limitation we have provided option to compress data.
+4. Solved an issue with return values from ``store.remove`` and ``removeCookie``. Now these methods will return ``true`` only when values have actually deleted from storage and/or cookies.

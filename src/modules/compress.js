@@ -1,11 +1,8 @@
 import { f } from './fromCharCode';
-
-function _hasOwn(ob, key) {
-    return Object.prototype.hasOwnProperty.call(ob, key);
-}
+import { hasOwn } from '../api/vars';
 
 function _updateContext(context, bitsPerChar, getCharFromInt) {
-    if (_hasOwn(context.context_dictionaryToCreate, context.context_w)) {
+    if (hasOwn.call(context.context_dictionaryToCreate, context.context_w)) {
         if (context.context_w.charCodeAt(0) < 256) {
             for (let i = 0; i < context.context_numBits; i++) {
                 context.context_data_val = (context.context_data_val << 1);
@@ -102,12 +99,12 @@ function compress(uncompressed = '', bitsPerChar, getCharFromInt) {
     let i = 0;
     for (let ii = 0; ii < uncompressed.length; ii += 1) {
         context.context_c = uncompressed.charAt(ii);
-        if (!_hasOwn(context.context_dictionary, context.context_c)) {
+        if (!hasOwn.call(context.context_dictionary, context.context_c)) {
             context.context_dictionary[context.context_c] = context.context_dictSize++;
             context.context_dictionaryToCreate[context.context_c] = true;
         }
         context.context_wc = context.context_w + context.context_c;
-        if (_hasOwn(context.context_dictionary, context.context_wc)) {
+        if (hasOwn.call(context.context_dictionary, context.context_wc)) {
             context.context_w = context.context_wc;
         } else {
             _updateContext(context, bitsPerChar, getCharFromInt);
