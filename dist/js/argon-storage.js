@@ -41,10 +41,19 @@
   }
 
   /**
+   * Returns true if provided value is an object
+   * @param {*} value Any value
+   */
+  function isObject(value) {
+    return value && _typeof(value) === 'object';
+  }
+  /**
    * Returns default if original is undefined
    * @param {*} value Original value
    * @param {*} defaultValue Default value
    */
+
+
   function setDefault(value, defaultValue) {
     if (typeof value === 'undefined') {
       return defaultValue;
@@ -70,7 +79,7 @@
    */
 
   function loopFunc(ref, target) {
-    if (ref != null && _typeof(ref) === 'object') {
+    if (isObject(ref)) {
       Object.keys(ref).forEach(function (key) {
         target[key] = ref[key];
       });
@@ -85,7 +94,7 @@
 
   function assign() {
     var i = 0;
-    var target = _typeof(arguments[0]) !== 'object' || arguments[0] == null ? {} : arguments[0];
+    var target = isObject(arguments[0]) ? arguments[0] : {};
 
     for (i = 1; i < arguments.length; i++) {
       loopFunc(arguments[i], target);
@@ -770,9 +779,9 @@
     function ArgonStorage(config) {
       _classCallCheck(this, ArgonStorage);
 
-      this.config = Object.freeze(assign(config, {
+      this.config = Object.freeze(assign({
         compress: false
-      }));
+      }, config));
       this.available = isAvailable();
     }
 

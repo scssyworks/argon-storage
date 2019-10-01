@@ -109,7 +109,7 @@ function deleteKey(key) {
  */
 export class ArgonStorage {
     constructor(config) {
-        this.config = Object.freeze(assign(config, { compress: false }));
+        this.config = Object.freeze(assign({ compress: false }, config));
         this.available = isAvailable();
     }
     set() {

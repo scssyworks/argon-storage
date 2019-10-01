@@ -1,4 +1,12 @@
 /**
+ * Returns true if provided value is an object
+ * @param {*} value Any value
+ */
+function isObject(value) {
+    return value && typeof value === 'object';
+}
+
+/**
  * Returns default if original is undefined
  * @param {*} value Original value
  * @param {*} defaultValue Default value
@@ -27,7 +35,7 @@ export function trim(value) {
  * @param {object} target First object
  */
 function loopFunc(ref, target) {
-    if (ref != null && typeof ref === 'object') {
+    if (isObject(ref)) {
         Object.keys(ref).forEach(function (key) {
             target[key] = ref[key];
         });
@@ -41,7 +49,7 @@ function loopFunc(ref, target) {
  */
 export function assign() {
     let i = 0;
-    const target = typeof arguments[0] !== 'object' || arguments[0] == null ? {} : arguments[0];
+    const target = isObject(arguments[0]) ? arguments[0] : {};
     for (i = 1; i < arguments.length; i++) {
         loopFunc(arguments[i], target);
     }
