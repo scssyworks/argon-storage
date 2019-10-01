@@ -1,6 +1,6 @@
 {
   "name": "argon-storage",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Argon storage extends default storage API to resolve cross browser compatibility issues",
   "main": "dist/js/argon-storage.js",
   "module": "src/argon-storage.js",
