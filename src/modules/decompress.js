@@ -1,30 +1,10 @@
 import { f } from './fromCharCode';
 
-function decompress(length, resetValue, getNextValue) {
-    const dictionary = [];
-    const data = {
-        val: getNextValue(0),
-        position: resetValue,
-        index: 1
-    };
-    const result = [];
-    let next;
-    let enlargeIn = 4;
-    let dictSize = 4;
-    let numBits = 3;
-    let entry = "";
-    let w;
-    let resb;
-    let c;
-
-    for (let i = 0; i < 3; i += 1) {
-        dictionary[i] = i;
-    }
+function _commonRep3(data, maxpower, resetValue, getNextValue) {
     let bits = 0;
-    let maxpower = Math.pow(2, 2);
     let power = 1;
     while (power !== maxpower) {
-        resb = data.val & data.position;
+        const resb = data.val & data.position;
         data.position >>= 1;
         if (data.position === 0) {
             data.position = resetValue;
@@ -33,98 +13,51 @@ function decompress(length, resetValue, getNextValue) {
         bits |= (resb > 0 ? 1 : 0) * power;
         power <<= 1;
     }
-    next = bits;
-    switch (next) {
+    return bits;
+}
+
+function decompress(length, resetValue, getNextValue) {
+    const dictionary = [];
+    const data = {
+        val: getNextValue(0),
+        position: resetValue,
+        index: 1
+    };
+    const result = [];
+    let enlargeIn = 4;
+    let dictSize = 4;
+    let numBits = 3;
+    let entry = '';
+    let w;
+    let c;
+    for (let i = 0; i < 3; i++) {
+        dictionary[i] = i;
+    }
+    switch (_commonRep3(data, Math.pow(2, 2), resetValue, getNextValue)) {
         case 0:
-            bits = 0;
-            maxpower = Math.pow(2, 8);
-            power = 1;
-            while (power !== maxpower) {
-                resb = data.val & data.position;
-                data.position >>= 1;
-                if (data.position === 0) {
-                    data.position = resetValue;
-                    data.val = getNextValue(data.index++);
-                }
-                bits |= (resb > 0 ? 1 : 0) * power;
-                power <<= 1;
-            }
-            c = f(bits);
+            c = f(_commonRep3(data, Math.pow(2, 8), resetValue, getNextValue));
             break;
         case 1:
-            bits = 0;
-            maxpower = Math.pow(2, 16);
-            power = 1;
-            while (power !== maxpower) {
-                resb = data.val & data.position;
-                data.position >>= 1;
-                if (data.position === 0) {
-                    data.position = resetValue;
-                    data.val = getNextValue(data.index++);
-                }
-                bits |= (resb > 0 ? 1 : 0) * power;
-                power <<= 1;
-            }
-            c = f(bits);
+            c = f(_commonRep3(data, Math.pow(2, 16), resetValue, getNextValue));
             break;
         case 2:
-            return "";
+            return '';
     }
     dictionary[3] = c;
     w = c;
     result.push(c);
     while (true) {
         if (data.index > length) {
-            return "";
+            return '';
         }
-        bits = 0;
-        maxpower = Math.pow(2, numBits);
-        power = 1;
-        while (power !== maxpower) {
-            resb = data.val & data.position;
-            data.position >>= 1;
-            if (data.position === 0) {
-                data.position = resetValue;
-                data.val = getNextValue(data.index++);
-            }
-            bits |= (resb > 0 ? 1 : 0) * power;
-            power <<= 1;
-        }
-        switch (c = bits) {
+        switch (c = _commonRep3(data, Math.pow(2, numBits), resetValue, getNextValue)) {
             case 0:
-                bits = 0;
-                maxpower = Math.pow(2, 8);
-                power = 1;
-                while (power !== maxpower) {
-                    resb = data.val & data.position;
-                    data.position >>= 1;
-                    if (data.position === 0) {
-                        data.position = resetValue;
-                        data.val = getNextValue(data.index++);
-                    }
-                    bits |= (resb > 0 ? 1 : 0) * power;
-                    power <<= 1;
-                }
-
-                dictionary[dictSize++] = f(bits);
+                dictionary[dictSize++] = f(_commonRep3(data, Math.pow(2, 8), resetValue, getNextValue));
                 c = dictSize - 1;
                 enlargeIn--;
                 break;
             case 1:
-                bits = 0;
-                maxpower = Math.pow(2, 16);
-                power = 1;
-                while (power !== maxpower) {
-                    resb = data.val & data.position;
-                    data.position >>= 1;
-                    if (data.position === 0) {
-                        data.position = resetValue;
-                        data.val = getNextValue(data.index++);
-                    }
-                    bits |= (resb > 0 ? 1 : 0) * power;
-                    power <<= 1;
-                }
-                dictionary[dictSize++] = f(bits);
+                dictionary[dictSize++] = f(_commonRep3(data, Math.pow(2, 16), resetValue, getNextValue));
                 c = dictSize - 1;
                 enlargeIn--;
                 break;
@@ -155,14 +88,10 @@ function decompress(length, resetValue, getNextValue) {
     }
 }
 
-function decompressImpl(compressed = '') {
-    if (compressed === null) {
-        return '';
-    }
-    if (compressed === '') {
-        return null;
-    }
-    return decompress(compressed, 32768, (index) => compressed.charCodeAt(index));
+function decompressImpl(compressed) {
+    if (compressed == null) return '';
+    if (compressed === '') return null;
+    return decompress(compressed, 32768, i => compressed.charCodeAt(i));
 }
 
 export default decompress;

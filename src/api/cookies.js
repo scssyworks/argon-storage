@@ -1,4 +1,4 @@
-import { setDefault, trim, each } from './helpers';
+import { def, trim, each } from './helpers';
 import { loc } from './vars';
 import { MAX_END_DATE, MILLISECOND_MULTIPLIER, LOCAL_ENV, COOKIE_DEL_DATE } from './constants';
 
@@ -13,8 +13,8 @@ import { MAX_END_DATE, MILLISECOND_MULTIPLIER, LOCAL_ENV, COOKIE_DEL_DATE } from
  */
 export function setCookie(key, value, expiryDays, path, domain, isSecure) {
     if (key && typeof value !== 'undefined') {
-        path = setDefault(path, '/');
-        domain = setDefault(domain, loc.hostname);
+        path = def(path, '/');
+        domain = def(domain, loc.hostname);
         let transformedValue = value;
         if (typeof value === 'object' && value) {
             transformedValue = JSON.stringify(value);
@@ -85,8 +85,8 @@ export function getAllCookies(matchRegex) {
 export function removeCookie(key, path, domain) {
     const currentValue = getCookie.apply(this, [key]);
     if (key && currentValue.length) {
-        path = setDefault(path, '/');
-        domain = setDefault(domain, loc.hostname);
+        path = def(path, '/');
+        domain = def(domain, loc.hostname);
         const cookieDomain = LOCAL_ENV.indexOf(domain) === -1 ? `; domain=${domain.trim()}` : '';
         const deletedCookieString = `${key}=; expires=${COOKIE_DEL_DATE}${cookieDomain}; path=${path}`;
         document.cookie = deletedCookieString;

@@ -11,11 +11,8 @@ function isObject(value) {
  * @param {*} value Original value
  * @param {*} defaultValue Default value
  */
-export function setDefault(value, defaultValue) {
-    if (typeof value === 'undefined') {
-        return defaultValue;
-    }
-    return value;
+export function def(value, defaultValue) {
+    return typeof value === 'undefined' ? defaultValue : value;
 }
 
 /**
@@ -89,4 +86,8 @@ export function tryParse(value) {
     } catch (e) {
         return value;
     }
+}
+
+export function hasOwn(ob, prop) {
+    return Object.prototype.hasOwnProperty.call(ob, prop);
 }

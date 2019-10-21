@@ -1,35 +1,64 @@
 import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
+import cleanup from "rollup-plugin-cleanup";
+
+const commonConfig = {
+    input: "src/argon-storage.js",
+    output: {
+        sourcemap: true,
+        name: "ArgonStorage",
+        exports: 'named'
+    }
+};
+
+const umdConfig = Object.assign({}, commonConfig);
+umdConfig.output = Object.assign({}, commonConfig.output, {
+    file: 'dist/umd/index.js',
+    format: 'umd'
+});
+umdConfig.plugins = [
+    babel({
+        exclude: "node_modules/**"
+    }),
+    cleanup({
+        maxEmptyLines: 0
+    })
+];
+
+const umdProdConfig = Object.assign({}, umdConfig);
+umdProdConfig.output = Object.assign({}, umdConfig.output, {
+    file: 'dist/umd/index.min.js',
+    sourcemap: false
+});
+umdProdConfig.plugins = [
+    ...umdConfig.plugins,
+    terser()
+];
+
+const esmConfig = Object.assign({}, commonConfig);
+esmConfig.output = Object.assign({}, commonConfig.output, {
+    file: 'dist/esm/index.esm.js',
+    format: 'esm'
+});
+esmConfig.plugins = [
+    cleanup({
+        maxEmptyLines: 0
+    })
+];
+
+const esmProdConfig = Object.assign({}, esmConfig);
+esmProdConfig.output = Object.assign({}, esmConfig.output, {
+    file: 'dist/esm/index.esm.min.js',
+    sourcemap: false
+});
+esmProdConfig.plugins = [
+    ...esmConfig.plugins,
+    terser()
+];
 
 export default [
-    {
-        input: "src/argon-storage.js",
-        output: {
-            file: "dist/js/argon-storage.js",
-            sourcemap: true,
-            format: "umd",
-            name: "ArgonStorage",
-            exports: 'named'
-        },
-        plugins: [
-            babel({
-                exclude: "node_modules/**"
-            })
-        ]
-    },
-    {
-        input: "src/argon-storage.js",
-        output: {
-            file: "dist/js/argon-storage.min.js",
-            format: "umd",
-            name: "ArgonStorage",
-            exports: 'named'
-        },
-        plugins: [
-            babel({
-                exclude: "node_modules/**"
-            }),
-            terser()
-        ]
-    }
+    umdConfig,
+    umdProdConfig,
+    esmConfig,
+    esmProdConfig
 ]

@@ -1,5 +1,5 @@
-import { ls, ss, hasOwn } from './vars';
-import { assign, tryParse } from './helpers';
+import { ls, ss } from './vars';
+import { assign, tryParse, hasOwn } from './helpers';
 import { toUTF16, fromUTF16 } from '../modules/utf16';
 import { setCookie, getCookie, removeCookie } from './cookies';
 import { types } from './constants';
@@ -54,7 +54,7 @@ function getAllMatched(key) {
         // Local and Session storage
         if (this.available) {
             [ls, ss].forEach(storageType => {
-                if (hasOwn.call(storageType, key)) {
+                if (hasOwn(storageType, key)) {
                     const value = storageType.getItem(key);
                     allValues.push({
                         key,
