@@ -10,10 +10,10 @@ export function toUTF16(input) {
 }
 
 export function fromUTF16(compressed) {
-    if (compress == null) {
+    if (compressed == null) {
         return '';
     }
-    if (compress === '') {
+    if (compressed === '') {
         return null;
     }
     return decompress(compressed.length, 16384, (index) => (compressed.charCodeAt(index) - 32));

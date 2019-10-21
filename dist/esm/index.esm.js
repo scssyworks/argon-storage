@@ -2,10 +2,7 @@ function isObject(value) {
     return value && typeof value === 'object';
 }
 function def(value, defaultValue) {
-    if (typeof value === 'undefined') {
-        return defaultValue;
-    }
-    return value;
+    return typeof value === 'undefined' ? defaultValue : value;
 }
 function trim(value) {
     return (typeof value === 'string' ? value.trim() : '');
@@ -336,10 +333,10 @@ function toUTF16(input) {
     return compress(input, 15, (a) => f(a + 32)) + ' ';
 }
 function fromUTF16(compressed) {
-    if (compress == null) {
+    if (compressed == null) {
         return '';
     }
-    if (compress === '') {
+    if (compressed === '') {
         return null;
     }
     return decompress(compressed.length, 16384, (index) => (compressed.charCodeAt(index) - 32));
