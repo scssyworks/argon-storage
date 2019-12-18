@@ -5,6 +5,9 @@
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.esm.js",
   "types": "src/argon-storage.d.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "build": "rollup -c"
   },
@@ -29,11 +32,11 @@
   },
   "homepage": "https://github.com/scssyworks/lzstorage#readme",
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
-    "rollup": "^1.25.1",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.6",
+    "rollup": "^1.27.13",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-cleanup": "^3.1.1",
-    "rollup-plugin-terser": "^5.1.1"
+    "rollup-plugin-terser": "^5.1.3"
   }
 }
