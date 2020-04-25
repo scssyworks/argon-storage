@@ -93,9 +93,13 @@
     return Object.prototype.hasOwnProperty.call(ob, prop);
   }
 
-  var loc = self.location;
-  var ls = self.localStorage;
-  var ss = self.sessionStorage;
+  var WINDOW = {};
+  if ((typeof window === "undefined" ? "undefined" : _typeof(window)) !== undefined) {
+    WINDOW = window;
+  }
+  var loc = WINDOW.location;
+  var ls = WINDOW.localStorage;
+  var ss = WINDOW.sessionStorage;
 
   var MAX_END_DATE = 'Thu, 31 Dec 2037 00:00:00 GMT';
   var COOKIE_DEL_DATE = 'Thu, 01 Jan 1970 00:00:00 UTC';
