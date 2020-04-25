@@ -7,7 +7,10 @@ const commonConfig = {
     output: {
         sourcemap: true,
         name: "ArgonStorage",
-        exports: 'named'
+        exports: 'named',
+        globals: {
+            window: 'window'
+        }
     }
 };
 

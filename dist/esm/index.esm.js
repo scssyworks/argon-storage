@@ -49,13 +49,10 @@ function hasOwn(ob, prop) {
     return Object.prototype.hasOwnProperty.call(ob, prop);
 }
 
-let WINDOW = {};
-if (typeof window !== undefined) {
-    WINDOW = window;
-}
-const loc = WINDOW.location;
-const ls = WINDOW.localStorage;
-const ss = WINDOW.sessionStorage;
+const global = global || self;
+const loc = global.location;
+const ls = global.localStorage;
+const ss = global.sessionStorage;
 
 const MAX_END_DATE = 'Thu, 31 Dec 2037 00:00:00 GMT';
 const COOKIE_DEL_DATE = 'Thu, 01 Jan 1970 00:00:00 UTC';

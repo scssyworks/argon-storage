@@ -1,9 +1,7 @@
-let WINDOW = {};
-if (typeof window !== undefined) {
-    WINDOW = window;
-}
-const loc = WINDOW.location;
-const ls = WINDOW.localStorage;
-const ss = WINDOW.sessionStorage;
+const global = global || self;
 
-export { WINDOW, loc, ls, ss };
+const loc = global.location;
+const ls = global.localStorage;
+const ss = global.sessionStorage;
+
+export { loc, ls, ss };
