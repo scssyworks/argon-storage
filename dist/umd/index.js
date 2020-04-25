@@ -93,7 +93,7 @@
     return Object.prototype.hasOwnProperty.call(ob, prop);
   }
 
-  var global = global || self;
+  var global = window;
   var loc = global.location;
   var ls = global.localStorage;
   var ss = global.sessionStorage;

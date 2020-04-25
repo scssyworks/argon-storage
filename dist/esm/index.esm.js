@@ -49,7 +49,7 @@ function hasOwn(ob, prop) {
     return Object.prototype.hasOwnProperty.call(ob, prop);
 }
 
-const global = global || self;
+const global = window;
 const loc = global.location;
 const ls = global.localStorage;
 const ss = global.sessionStorage;

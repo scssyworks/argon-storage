@@ -1,4 +1,4 @@
-const global = global || self;
+const global = window;
 
 const loc = global.location;
 const ls = global.localStorage;
