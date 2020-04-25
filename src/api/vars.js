@@ -1,3 +1,3 @@
-export const loc = window.location;
-export const ls = window.localStorage;
-export const ss = window.sessionStorage;
+export const loc = location;
+export const ls = localStorage;
+export const ss = sessionStorage;

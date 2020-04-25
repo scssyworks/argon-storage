@@ -5,6 +5,8 @@
 }(this, (function (exports) { 'use strict';
 
   function _typeof(obj) {
+    "@babel/helpers - typeof";
+
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
       _typeof = function (obj) {
         return typeof obj;
@@ -91,9 +93,9 @@
     return Object.prototype.hasOwnProperty.call(ob, prop);
   }
 
-  var loc = window.location;
-  var ls = window.localStorage;
-  var ss = window.sessionStorage;
+  var loc = location;
+  var ls = localStorage;
+  var ss = sessionStorage;
 
   var MAX_END_DATE = 'Thu, 31 Dec 2037 00:00:00 GMT';
   var COOKIE_DEL_DATE = 'Thu, 01 Jan 1970 00:00:00 UTC';
@@ -463,8 +465,7 @@
       return removeCookie(key);
     }
   }
-  var ArgonStorage =
-  function () {
+  var ArgonStorage = function () {
     function ArgonStorage(config) {
       _classCallCheck(this, ArgonStorage);
       this.config = Object.freeze(assign({

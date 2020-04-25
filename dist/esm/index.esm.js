@@ -49,9 +49,9 @@ function hasOwn(ob, prop) {
     return Object.prototype.hasOwnProperty.call(ob, prop);
 }
 
-const loc = window.location;
-const ls = window.localStorage;
-const ss = window.sessionStorage;
+const loc = location;
+const ls = localStorage;
+const ss = sessionStorage;
 
 const MAX_END_DATE = 'Thu, 31 Dec 2037 00:00:00 GMT';
 const COOKIE_DEL_DATE = 'Thu, 01 Jan 1970 00:00:00 UTC';
