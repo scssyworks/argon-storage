@@ -20,7 +20,7 @@ export function setCookie(key, value, expiryDays, path, domain, isSecure) {
             transformedValue = JSON.stringify(value);
         }
         let expiryDate = new Date();
-        if (typeof expiryDate === 'number') {
+        if (typeof expiryDays === 'number') {
             if (expiryDays === Infinity) {
                 expiryDate = new Date(MAX_END_DATE);
             } else {
