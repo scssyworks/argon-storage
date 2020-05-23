@@ -52,6 +52,7 @@ function hasOwn(ob, prop) {
 const loc = typeof location !== 'undefined' ? location : {};
 const ls = typeof localStorage !== 'undefined' ? localStorage : {};
 const ss = typeof sessionStorage !== 'undefined' ? sessionStorage : {};
+const doc = typeof document !== 'undefined' ? document : {};
 
 const MAX_END_DATE = 'Thu, 31 Dec 2037 00:00:00 GMT';
 const COOKIE_DEL_DATE = 'Thu, 01 Jan 1970 00:00:00 UTC';
@@ -84,12 +85,12 @@ function setCookie(key, value, expiryDays, path, domain, isSecure) {
         const cookieDomain = (LOCAL_ENV.indexOf(domain) === -1) ? `; domain=${domain.trim()}` : '';
         const secureFlag = (((typeof isSecure === 'boolean' && isSecure)
             || (typeof isSecure === 'undefined')) && (loc.protocol === 'https:')) ? '; secure' : '';
-        document.cookie = `${key} = ${transformedValue}${expires}${cookieDomain}${cookiePath}${secureFlag}`;
+        doc.cookie = `${key} = ${transformedValue}${expires}${cookieDomain}${cookiePath}${secureFlag}`;
     }
 }
 function getCookie(key, trimResult) {
     if (key) {
-        const cookieStr = decodeURIComponent(document.cookie);
+        const cookieStr = decodeURIComponent(doc.cookie);
         let value = '';
         each(cookieStr.split(';'), cookiePair => {
             const keyPart = `${key}=`;
@@ -107,7 +108,7 @@ function getCookie(key, trimResult) {
     return '';
 }
 function getAllCookies(matchRegex) {
-    return decodeURIComponent(document.cookie).split(';').map(cookiePair => {
+    return decodeURIComponent(doc.cookie).split(';').map(cookiePair => {
         const keyValuePair = cookiePair.split('=');
         const key = trim(keyValuePair[0]);
         const value = keyValuePair[1];
@@ -123,7 +124,7 @@ function removeCookie(key, path, domain) {
         domain = def(domain, loc.hostname);
         const cookieDomain = LOCAL_ENV.indexOf(domain) === -1 ? `; domain=${domain.trim()}` : '';
         const deletedCookieString = `${key}=; expires=${COOKIE_DEL_DATE}${cookieDomain}; path=${path}`;
-        document.cookie = deletedCookieString;
+        doc.cookie = deletedCookieString;
         return !trim(getCookie.apply(this, [key])).length;
     }
     return false;
