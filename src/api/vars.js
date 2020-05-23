@@ -1,7 +1,5 @@
-const global = window;
-
-const loc = global.location;
-const ls = global.localStorage;
-const ss = global.sessionStorage;
+const loc = typeof location !== 'undefined' ? location : {};
+const ls = typeof localStorage !== 'undefined' ? localStorage : {};
+const ss = typeof sessionStorage !== 'undefined' ? sessionStorage : {};
 
 export { loc, ls, ss };

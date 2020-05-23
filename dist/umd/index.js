@@ -93,10 +93,9 @@
     return Object.prototype.hasOwnProperty.call(ob, prop);
   }
 
-  var global = window;
-  var loc = global.location;
-  var ls = global.localStorage;
-  var ss = global.sessionStorage;
+  var loc = typeof location !== 'undefined' ? location : {};
+  var ls = typeof localStorage !== 'undefined' ? localStorage : {};
+  var ss = typeof sessionStorage !== 'undefined' ? sessionStorage : {};
 
   var MAX_END_DATE = 'Thu, 31 Dec 2037 00:00:00 GMT';
   var COOKIE_DEL_DATE = 'Thu, 01 Jan 1970 00:00:00 UTC';
@@ -472,7 +471,6 @@
       this.config = Object.freeze(assign({
         compress: false
       }, config));
-      this.available = isAvailable();
     }
     _createClass(ArgonStorage, [{
       key: "set",
@@ -503,6 +501,11 @@
       key: "remove",
       value: function remove() {
         return deleteKey.apply(this, arguments);
+      }
+    }, {
+      key: "available",
+      get: function get() {
+        return isAvailable();
       }
     }]);
     return ArgonStorage;

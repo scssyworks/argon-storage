@@ -49,10 +49,9 @@ function hasOwn(ob, prop) {
     return Object.prototype.hasOwnProperty.call(ob, prop);
 }
 
-const global = window;
-const loc = global.location;
-const ls = global.localStorage;
-const ss = global.sessionStorage;
+const loc = typeof location !== 'undefined' ? location : {};
+const ls = typeof localStorage !== 'undefined' ? localStorage : {};
+const ss = typeof sessionStorage !== 'undefined' ? sessionStorage : {};
 
 const MAX_END_DATE = 'Thu, 31 Dec 2037 00:00:00 GMT';
 const COOKIE_DEL_DATE = 'Thu, 01 Jan 1970 00:00:00 UTC';
@@ -422,7 +421,9 @@ function deleteKey(key) {
 class ArgonStorage {
     constructor(config) {
         this.config = Object.freeze(assign({ compress: false }, config));
-        this.available = isAvailable();
+    }
+    get available() {
+        return isAvailable();
     }
     set() {
         return setValue.apply(this, arguments);
