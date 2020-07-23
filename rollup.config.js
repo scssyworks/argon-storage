@@ -44,6 +44,9 @@ esmConfig.output = Object.assign({}, commonConfig.output, {
     format: 'esm'
 });
 esmConfig.plugins = [
+    babel({
+        exclude: "node_modules/**"
+    }),
     cleanup({
         maxEmptyLines: 0
     })
