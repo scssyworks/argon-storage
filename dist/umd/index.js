@@ -92,6 +92,32 @@
   function hasOwn(ob, prop) {
     return Object.prototype.hasOwnProperty.call(ob, prop);
   }
+  var TypeResolver = function () {
+    function TypeResolver(value) {
+      _classCallCheck(this, TypeResolver);
+      this.__v = value;
+    }
+    _createClass(TypeResolver, [{
+      key: "setValue",
+      value: function setValue(value) {
+        if (TypeResolver.match(value)) {
+          this.__v = value.__v;
+        }
+        return this;
+      }
+    }, {
+      key: "getValue",
+      value: function getValue() {
+        return this.__v;
+      }
+    }], [{
+      key: "match",
+      value: function match(value) {
+        return value && _typeof(value) === 'object' && Object.keys(value).length === 1 && hasOwn(value, '__v');
+      }
+    }]);
+    return TypeResolver;
+  }();
 
   var loc = typeof location !== 'undefined' ? location : {};
   var ls = typeof localStorage !== 'undefined' ? localStorage : {};
@@ -403,9 +429,7 @@
   }
   function setValue(key, value, isSession) {
     if (key && typeof value !== 'undefined') {
-      if (_typeof(value) === 'object' && value) {
-        value = JSON.stringify(value);
-      }
+      value = JSON.stringify(value && _typeof(value) === 'object' ? value : new TypeResolver(value));
       if (this.available) {
         var storageObj = isSession ? ss : ls;
         try {
@@ -418,6 +442,9 @@
       }
     }
   }
+  function valueResolver(value) {
+    return TypeResolver.match(value) ? new TypeResolver().setValue(value).getValue() : value;
+  }
   function getAllMatched(key) {
     var _this = this;
     var allValues = [];
@@ -425,20 +452,22 @@
       if (this.available) {
         [ls, ss].forEach(function (storageType) {
           if (hasOwn(storageType, key)) {
-            var _value = storageType.getItem(key);
+            var storageVal = storageType.getItem(key);
+            var _value = valueResolver(tryParse(_this.config.compress ? fromUTF16(storageVal) : storageVal));
             allValues.push({
               key: key,
-              value: tryParse(_this.config.compress ? fromUTF16(_value) : _value),
+              value: _value,
               type: types[storageType === ls ? 'LS' : 'SS']
             });
           }
         });
       }
-      var value = getCookie(key);
+      var cookieValue = getCookie(key);
+      var value = valueResolver(tryParse(cookieValue));
       if (value) {
         allValues.push({
           key: key,
-          value: tryParse(value),
+          value: value,
           type: types.CC
         });
       }

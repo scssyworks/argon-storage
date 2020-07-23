@@ -1,5 +1,5 @@
 import { ls, ss } from './vars';
-import { assign, tryParse, hasOwn } from './helpers';
+import { assign, tryParse, hasOwn, TypeResolver } from './helpers';
 import { toUTF16, fromUTF16 } from '../modules/utf16';
 import { setCookie, getCookie, removeCookie } from './cookies';
 import { types } from './constants';
@@ -25,9 +25,11 @@ function isAvailable() {
  */
 function setValue(key, value, isSession) {
     if (key && typeof value !== 'undefined') {
-        if (typeof value === 'object' && value) {
-            value = JSON.stringify(value);
-        }
+        value = JSON.stringify(
+            (value && typeof value === 'object')
+                ? value
+                : new TypeResolver(value)
+        );
         if (this.available) {
             const storageObj = isSession ? ss : ls;
             try {
@@ -45,6 +47,16 @@ function setValue(key, value, isSession) {
 }
 
 /**
+ * Resolves the current value currectly
+ * @param {any} value Input value
+ */
+function valueResolver(value) {
+    return TypeResolver.match(value)
+        ? (new TypeResolver().setValue(value)).getValue()
+        : value;
+}
+
+/**
  * Gets all saved values from storages
  * @param {string} key Key
  */
@@ -55,21 +67,27 @@ function getAllMatched(key) {
         if (this.available) {
             [ls, ss].forEach(storageType => {
                 if (hasOwn(storageType, key)) {
-                    const value = storageType.getItem(key);
+                    const storageVal = storageType.getItem(key);
+                    const value = valueResolver(tryParse(
+                        this.config.compress
+                            ? fromUTF16(storageVal)
+                            : storageVal
+                    ));
                     allValues.push({
                         key,
-                        value: tryParse(this.config.compress ? fromUTF16(value) : value),
+                        value,
                         type: types[storageType === ls ? 'LS' : 'SS']
                     });
                 }
             });
         }
         // Cookies
-        const value = getCookie(key);
+        const cookieValue = getCookie(key);
+        const value = valueResolver(tryParse(cookieValue));
         if (value) {
             allValues.push({
                 key,
-                value: tryParse(value),
+                value,
                 type: types.CC
             });
         }

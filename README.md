@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/scssyworks/lzstorage.svg?branch=master)](https://travis-ci.org/scssyworks/lzstorage)
 
-# Argon Storage (Formerly <a href="https://www.npmjs.com/package/lzstorage">LZStorage</a>)
+# Argon Storage
 
-Argon storage is a cross-browser wrapper for Cookies and Storage API. Argon Storage implements data compression using <a href="https://github.com/pieroxy/lz-string">Pieroxy's</a> LZW algorithm, so that you never run out of storage capacity (esp. mobile devices).
+Argon storage is a cross-browser wrapper for local storage.
 
 # Installation
 
@@ -10,59 +10,149 @@ Argon storage is a cross-browser wrapper for Cookies and Storage API. Argon Stor
 npm i argon-storage
 ```
 
-# How to use?
+# How does it work?
 
-ES6 modules
+### Argon storage test's if your current browser supports local/session storage API. If not, it stores data in cookies.
 
+With Argon Storage
 ```js
-import ArgonStorage, { getCookie, setCookie } from 'argon-storage';
+import ArgonStorage from 'argon-storage';
 const store = new ArgonStorage();
-const compressedStore = new ArgonStorage({ compress: true }); // Enable compression
-store.set('TestStorage', 'value');
-setCookie('TestCookie', 'cookieValue');
-store.get('TestStorage'); // -> 'value'
-getCookie('TestCookie'); // -> 'cookieValue'
+
+store.set('dataKey', 'dataValue');
+const value = store.get('dataKey'); // --> 'dataValue'
 ```
 
-ES5
+Without Argon Storage
+```js
+let value = '';
+try {
+    localStorage && localStorage.setItem('dataKey', 'dataValue');
+    if (localStorage) {
+        value = localStorage.getItem('dataKey'); // --> 'dataValue'
+    }
+} catch(e) {
+    // Assuming you have 'setCookie' and 'getCookie' implementation available
+    setCookie('dataKey', 'dataValue');
+    value = getCookie('dataKey');
+}
+```
+
+### Argon Storage takes an extra step to verify your data and stores it correctly in local storage.
+
+Without Argon Storage
+```js
+localStorage.setItem('item', { m: 'helloworld', n: 100 });
+localStorage.getItem('item'); // --> [object Object] // Local storage stores everything as strings
+```
+
+With Argon Storage
+```js
+...
+store.set('item', { m: 'helloworld', n: 100 });
+store.get('item'); // --> { m: 'helloworld', n: 100 }
+```
+
+Saves an extra step of transforming data before saving it.
+
+### You can also store data in session storage. Data validations and fallback still works.
 
 ```js
-const store = new ArgonStorage.default();
-const { getCookie, setCookie } = ArgonStorage;
+...
+store.set('item', 'value', true); // Third parameter enables session storage mode
+```
+
+### Argon Storage respects the "type" of data stored.
+
+Without Argon Storage
+
+```js
+localStorage.set('item', true); // Stored value is boolean
+localStorage.get('item'); // --> 'true' // Retrieved value is a string
+```
+
+With Argon Storage
+
+```js
+...
+store.set('item', true);
+store.get('item'); // --> true // Returns the value as boolean
+```
+
+### Argon storage supports data compression
+
+We use Pieroxy's LZW algorithm (custom implementation) to compress input data. Useful to save some bytes when dealing with large dataset.
+
+```js
+const store = new ArgonStorage({ compress: true });
 ...
 ```
 
-# Available methods
+
+### Argon Storage provide methods to save data directly to cookies
 
 ```js
-store.get(key [, isSession]); // Gets storage value from local storage, session storage or cookie (whichever is available)
+import { setCookie, getCookie } from 'argon-storage';
 
-store.set(key, value [, isSession]); // Stores a value in storage. If storage is unavailable, the value is saved in cookies
-
-store.getAll(key); // Gets list of matching key values from storage and cookies
-
-store.remove(key); // Removes all values that match from storage and cookies. 
-
-
-getCookie(key [, trimResults]); // Get's a cookie value
-
-setCookie(key, value [, expiryInDays][, path][, domain][, isSecure]); // Set's a cookie value
-
-removeCookie(key [, path][, domain]); // Removes a cookie value
-
-getAllCookies([matchRegex]); // Get's a list of all available cookies
-
-compress(value); // Returns compressed value
-
-decompress(value); // Decompresses compressed value
+setCookie('item', 'value');
+getCookie('item'); // --> 'value'
 ```
 
-# What has changed from version 1?
+By default ``setCookie`` creates a session cookie (cookie without an expiry). You can set ``expiryDays`` by passing a third parameter.
 
-1. Removed ``store.update``. The implementation was complex and much slower and impractical to use in real projects.
+```js
+setCookie('item', 'value', 3); // Cookie expires after 3 days
+```
 
-2. Cookie related functions are now independent from ``store``. You can now import them separately.<br>
+You can also set cookie ``path`` and ``domain`` by passing fourth and fifth parameters.
 
-3. Added new functions: ``getAllCookies``, ``compress`` and ``decompress`` for more flexibility.<br>
+```js
+setCookie('item', 'value', null /* Setting up a session cookie */ , '/', 'example.com');
+```
 
-4. Solved an issue with return values from ``store.remove`` and ``removeCookie``. Now these methods will return ``true`` only when values have actually deleted from storage and/or cookies.
+However, if you don't pass them, the path value defaults to ``/`` and domain value defaults to current site domain. If for any reason you do not want to set domain (which isn't recommended), you can pass an empty string value.
+
+You can also mark cookies as secure by passing a sixth boolean parameter.
+
+```js
+setCookie('item', 'value', null /* Setting up a session cookie */ , '/', 'example.com', true); // Creates a secure cookie
+```
+
+For secure websites, you don't need to do this step. Argon storage by default creates secure cookies by checking if the site uses an ``https://`` URL.
+
+# About
+
+Argon Storage is a great utility for local storage. It is tested on majority of desktop and mobile browsers which makes it perfect for production use. It's built-in type resolution reduces a ton of code (and pain to write them). You can see it for yourself in one of the examples above.
+
+Argon Storage supports IE9 browser and above.
+
+# Additional functions/methods
+
+## Get All Cookies
+
+```js
+import { getAllCookies } from 'argon-storage';
+getAllCookies(); // --> Returns all stored cookies as {map}
+getAllCookies(/test_cookie/); // --> Returns all stored cookies that matches the regex.
+```
+
+## Remove Cookie
+
+```js
+import { removeCookie } from 'argon-storage';
+removeCookie('test'); // Deletes a cookie
+```
+
+## Remove local/session storage data
+
+```js
+import ArgonStorage from 'argon-storage';
+(new ArgonStorage())
+  .remove('item'); // Removes an item from local/session storage.
+```
+
+```js
+...
+(new ArgonStorage())
+  .remove('item', true); // Removes item from session storage only.
+```

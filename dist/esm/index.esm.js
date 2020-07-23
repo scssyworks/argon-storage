@@ -48,6 +48,23 @@ function tryParse(value) {
 function hasOwn(ob, prop) {
     return Object.prototype.hasOwnProperty.call(ob, prop);
 }
+class TypeResolver {
+    constructor(value) {
+        this.__v = value;
+    }
+    static match(value) {
+        return (value && typeof value === 'object' && Object.keys(value).length === 1 && hasOwn(value, '__v'));
+    }
+    setValue(value) {
+        if (TypeResolver.match(value)) {
+            this.__v = value.__v;
+        }
+        return this;
+    }
+    getValue() {
+        return this.__v;
+    }
+}
 
 const loc = typeof location !== 'undefined' ? location : {};
 const ls = typeof localStorage !== 'undefined' ? localStorage : {};
@@ -354,9 +371,11 @@ function isAvailable() {
 }
 function setValue(key, value, isSession) {
     if (key && typeof value !== 'undefined') {
-        if (typeof value === 'object' && value) {
-            value = JSON.stringify(value);
-        }
+        value = JSON.stringify(
+            (value && typeof value === 'object')
+                ? value
+                : new TypeResolver(value)
+        );
         if (this.available) {
             const storageObj = isSession ? ss : ls;
             try {
@@ -372,26 +391,37 @@ function setValue(key, value, isSession) {
         }
     }
 }
+function valueResolver(value) {
+    return TypeResolver.match(value)
+        ? (new TypeResolver().setValue(value)).getValue()
+        : value;
+}
 function getAllMatched(key) {
     const allValues = [];
     try {
         if (this.available) {
             [ls, ss].forEach(storageType => {
                 if (hasOwn(storageType, key)) {
-                    const value = storageType.getItem(key);
+                    const storageVal = storageType.getItem(key);
+                    const value = valueResolver(tryParse(
+                        this.config.compress
+                            ? fromUTF16(storageVal)
+                            : storageVal
+                    ));
                     allValues.push({
                         key,
-                        value: tryParse(this.config.compress ? fromUTF16(value) : value),
+                        value,
                         type: types[storageType === ls ? 'LS' : 'SS']
                     });
                 }
             });
         }
-        const value = getCookie(key);
+        const cookieValue = getCookie(key);
+        const value = valueResolver(tryParse(cookieValue));
         if (value) {
             allValues.push({
                 key,
-                value: tryParse(value),
+                value,
                 type: types.CC
             });
         }

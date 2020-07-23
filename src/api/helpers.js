@@ -91,3 +91,21 @@ export function tryParse(value) {
 export function hasOwn(ob, prop) {
     return Object.prototype.hasOwnProperty.call(ob, prop);
 }
+
+export class TypeResolver {
+    constructor(value) {
+        this.__v = value;
+    }
+    static match(value) {
+        return (value && typeof value === 'object' && Object.keys(value).length === 1 && hasOwn(value, '__v'));
+    }
+    setValue(value) {
+        if (TypeResolver.match(value)) {
+            this.__v = value.__v;
+        }
+        return this;
+    }
+    getValue() {
+        return this.__v;
+    }
+}
