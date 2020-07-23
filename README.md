@@ -132,7 +132,7 @@ Argon Storage supports IE9 browser and above.
 
 ```js
 import { getAllCookies } from 'argon-storage';
-getAllCookies(); // --> Returns all stored cookies as {map}
+getAllCookies(); // --> Returns all stored cookies as list[]
 getAllCookies(/test_cookie/); // --> Returns all stored cookies that matches the regex.
 ```
 
