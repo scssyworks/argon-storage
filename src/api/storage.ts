@@ -60,12 +60,11 @@ function valueResolver(value: any): any {
  * Gets all saved values from storages
  * @param {string} key Key
  */
-function getAllMatched(...args: string[]): {
+function getAllMatched(key: string): {
     key: string;
     value: any;
     type: string;
 }[] {
-    const [key] = args;
     const allValues = [];
     try {
         // Local and Session storage
@@ -106,8 +105,7 @@ function getAllMatched(...args: string[]): {
  * Removes all keys
  * @param {object|string} matchRegex Regular expression to match keys to be deleted
  */
-function deleteKey(...args: string[]) {
-    const [key] = args;
+function deleteKey(key: string) {
     try {
         let hasValues = false;
         if (this.available) {
@@ -150,9 +148,9 @@ export class ArgonStorage {
     set(key: string, value: any, isSession?: boolean) {
         return setValue.apply(this, [key, value, isSession]);
     }
-    get(...args: any[]) {
-        const matched = this.getAll.apply(this, args).filter(obj => {
-            if (args[1]) {
+    get(key: string, isSession?: boolean) {
+        const matched = this.getAll.apply(this, [key]).filter(obj => {
+            if (isSession) {
                 return obj.type === types.SS;
             }
             return true;
@@ -162,10 +160,10 @@ export class ArgonStorage {
         }
         return;
     }
-    getAll(...args: any[]) {
-        return getAllMatched.apply(this, args);
+    getAll(key: string) {
+        return getAllMatched.apply(this, [key]);
     }
-    remove(...args: any[]) {
-        return deleteKey.apply(this, args);
+    remove(key: string) {
+        return deleteKey.apply(this, [key]);
     }
 }
