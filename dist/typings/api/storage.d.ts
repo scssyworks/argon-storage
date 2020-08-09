@@ -8,12 +8,12 @@ export declare class ArgonStorage {
     });
     get available(): boolean;
     set(key: string, value: any, isSession?: boolean): void;
-    get(...args: any[]): any;
-    getAll(...args: any[]): {
+    get(key: string, isSession?: boolean): any;
+    getAll(key: string): {
         key: string;
         value: any;
         type: string;
     }[];
-    remove(...args: any[]): boolean;
+    remove(key: string): boolean;
 }
 //# sourceMappingURL=storage.d.ts.map

@@ -726,14 +726,9 @@
    */
 
 
-  function getAllMatched() {
+  function getAllMatched(key) {
     var _this = this;
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    var key = args[0];
     var allValues = [];
 
     try {
@@ -777,13 +772,7 @@
    */
 
 
-  function deleteKey() {
-    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
-
-    var key = args[0];
-
+  function deleteKey(key) {
     try {
       var hasValues = false;
 
@@ -838,13 +827,9 @@
       }
     }, {
       key: "get",
-      value: function get() {
-        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-          args[_key3] = arguments[_key3];
-        }
-
-        var matched = this.getAll.apply(this, args).filter(function (obj) {
-          if (args[1]) {
+      value: function get(key, isSession) {
+        var matched = this.getAll.apply(this, [key]).filter(function (obj) {
+          if (isSession) {
             return obj.type === types.SS;
           }
 
@@ -859,21 +844,13 @@
       }
     }, {
       key: "getAll",
-      value: function getAll() {
-        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-          args[_key4] = arguments[_key4];
-        }
-
-        return getAllMatched.apply(this, args);
+      value: function getAll(key) {
+        return getAllMatched.apply(this, [key]);
       }
     }, {
       key: "remove",
-      value: function remove() {
-        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-          args[_key5] = arguments[_key5];
-        }
-
-        return deleteKey.apply(this, args);
+      value: function remove(key) {
+        return deleteKey.apply(this, [key]);
       }
     }, {
       key: "available",
