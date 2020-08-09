@@ -132,6 +132,7 @@ function deleteKey(...args: string[]) {
  * @class ArgonStorage
  */
 export class ArgonStorage {
+    #available: boolean;
     config: {
         compress?: boolean;
     };
@@ -139,18 +140,19 @@ export class ArgonStorage {
         compress: boolean
     }) {
         this.config = Object.freeze(assign({ compress: false }, config));
+        this.#available = isAvailable();
     }
 
     get available(): boolean {
-        return isAvailable();
+        return this.#available;
     }
 
     set(key: string, value: any, isSession?: boolean) {
         return setValue.apply(this, [key, value, isSession]);
     }
-    get() {
-        const matched = this.getAll.apply(this, [...arguments]).filter(obj => {
-            if (arguments[1]) {
+    get(...args: any[]) {
+        const matched = this.getAll.apply(this, args).filter(obj => {
+            if (args[1]) {
                 return obj.type === types.SS;
             }
             return true;
@@ -163,7 +165,7 @@ export class ArgonStorage {
     getAll(...args: any[]) {
         return getAllMatched.apply(this, args);
     }
-    remove() {
-        return deleteKey.apply(this, [...arguments]);
+    remove(...args: any[]) {
+        return deleteKey.apply(this, args);
     }
 }

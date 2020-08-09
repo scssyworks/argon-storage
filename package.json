@@ -3,14 +3,16 @@
   "version": "2.1.1",
   "description": "Argon storage extends default storage API to resolve cross browser compatibility issues",
   "main": "dist/umd/index.js",
-  "types": "src/argon-storage.d.ts",
+  "module": "dist/esm/index.esm.js",
+  "types": "dist/typings/argon-storage.d.ts",
   "files": [
     "dist/esm/",
     "dist/umd/",
     "dist/typings/"
   ],
   "scripts": {
-    "build": "rollup -c"
+    "build": "npm run typegen && rollup -c",
+    "typegen": "tsc --declaration --noEmit false --outDir dist/typings/ --emitDeclarationOnly --declarationMap"
   },
   "repository": {
     "type": "git",
@@ -18,13 +20,14 @@
   },
   "keywords": [
     "storage",
-    "storage API",
-    "cross-browser",
-    "sessionStorage",
     "localStorage",
+    "sessionStorage",
     "cookies",
-    "lzw-compression",
-    "compression"
+    "argon",
+    "setCookie",
+    "getCookie",
+    "cross-browser",
+    "unversal"
   ],
   "author": "scssyworks",
   "license": "MIT",
@@ -34,10 +37,13 @@
   "homepage": "https://github.com/scssyworks/argon-storage#readme",
   "devDependencies": {
     "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-private-methods": "^7.10.4",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-typescript": "^7.10.4",
-    "rollup": "^1.32.1",
-    "rollup-plugin-babel": "^4.4.0",
+    "@rollup/plugin-babel": "^5.1.0",
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "rollup": "^2.23.1",
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-terser": "^5.3.0",
     "typescript": "^3.9.7"

@@ -1,56 +1,33 @@
-import babel from "rollup-plugin-babel";
+import babel from "@rollup/plugin-babel";
+import commonjs from "@rollup/plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
-import cleanup from "rollup-plugin-cleanup";
 
 const commonConfig = {
-    input: "src/argon-storage.ts",
+    input: 'src/argon-storage.ts',
     output: {
+        name: 'ArgonStorage',
         sourcemap: true,
-        name: "ArgonStorage",
         exports: 'named'
-    }
+    },
+    plugins: [
+        babel({
+            exclude: 'node_modules/**',
+            extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts']
+        }),
+        commonjs({
+            extensions: ['.js', '.ts']
+        })
+    ]
 };
 
-const umdConfig = Object.assign({}, commonConfig);
-umdConfig.output = Object.assign({}, commonConfig.output, {
-    file: 'dist/umd/index.js',
-    format: 'umd'
-});
-umdConfig.plugins = [
-    babel({
-        exclude: "node_modules/**",
-        extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts']
-    }),
-    cleanup({
-        maxEmptyLines: 0
-    })
-];
-
-const umdProdConfig = Object.assign({}, umdConfig);
-umdProdConfig.output = Object.assign({}, umdConfig.output, {
-    file: 'dist/umd/index.min.js',
-    sourcemap: false
-});
-umdProdConfig.plugins = [
-    ...umdConfig.plugins,
-    terser()
-];
-
+// ESM config
 const esmConfig = Object.assign({}, commonConfig);
 esmConfig.output = Object.assign({}, commonConfig.output, {
     file: 'dist/esm/index.esm.js',
     format: 'esm'
 });
-esmConfig.plugins = [
-    babel({
-        exclude: "node_modules/**",
-        extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts']
-    }),
-    cleanup({
-        maxEmptyLines: 0
-    })
-];
 
+// ESM prod config
 const esmProdConfig = Object.assign({}, esmConfig);
 esmProdConfig.output = Object.assign({}, esmConfig.output, {
     file: 'dist/esm/index.esm.min.js',
@@ -61,9 +38,30 @@ esmProdConfig.plugins = [
     terser()
 ];
 
+// UMD config
+const umdConfig = Object.assign({}, commonConfig);
+umdConfig.output = Object.assign({}, commonConfig.output, {
+    file: 'dist/umd/index.js',
+    format: 'umd'
+});
+umdConfig.plugins = [
+    ...commonConfig.plugins
+];
+
+// Production config
+const umdProdConfig = Object.assign({}, umdConfig);
+umdProdConfig.output = Object.assign({}, umdConfig.output, {
+    file: 'dist/umd/index.min.js',
+    sourcemap: false
+});
+umdProdConfig.plugins = [
+    ...umdConfig.plugins,
+    terser()
+];
+
 export default [
-    umdConfig,
-    umdProdConfig,
     esmConfig,
-    esmProdConfig
-]
+    esmProdConfig,
+    umdConfig,
+    umdProdConfig
+];
