@@ -1,7 +1,7 @@
 import { f } from './fromCharCode';
 import { hasOwn } from '../api/helpers';
 
-function _update(context, bitsPerChar, getCharFromInt) {
+function _update(context: any, bitsPerChar: any, getCharFromInt: any): void {
     if (context.context_data_position == bitsPerChar - 1) {
         context.context_data_position = 0;
         context.context_data.push(getCharFromInt(context.context_data_val));
@@ -11,7 +11,7 @@ function _update(context, bitsPerChar, getCharFromInt) {
     }
 }
 
-function _updateContextNumBits(context) {
+function _updateContextNumBits(context: any): void {
     context.context_enlargeIn--;
     if (context.context_enlargeIn == 0) {
         context.context_enlargeIn = 2 ** context.context_numBits;
@@ -19,7 +19,7 @@ function _updateContextNumBits(context) {
     }
 }
 
-function _updateContext(context, bitsPerChar, getCharFromInt) {
+function _updateContext(context: any, bitsPerChar: any, getCharFromInt: any): void {
     if (hasOwn(context.context_dictionaryToCreate, context.context_w)) {
         if (context.context_w.charCodeAt(0) < 256) {
             for (let i = 0; i < context.context_numBits; i++) {
@@ -59,13 +59,13 @@ function _updateContext(context, bitsPerChar, getCharFromInt) {
     _updateContextNumBits(context);
 }
 
-function compress(uncompressed, bitsPerChar, getCharFromInt) {
+function compress(uncompressed: any, bitsPerChar: any, getCharFromInt: any): any {
     if (uncompressed == null) {
         return '';
     }
-    const context = {
-        context_dictionary: {},
-        context_dictionaryToCreate: {},
+    const context: { [key: string]: any } = {
+        context_dictionary: {} as any,
+        context_dictionaryToCreate: {} as any,
         context_data: [],
         context_c: "",
         context_wc: "",
@@ -113,11 +113,11 @@ function compress(uncompressed, bitsPerChar, getCharFromInt) {
     return context.context_data.join('');
 }
 
-function compressImpl(uncompressed) {
+function compressImpl(uncompressed: any) {
     if (uncompressed == null) {
         return '';
     }
-    return compress(uncompressed, 16, (a) => f(a));
+    return compress(uncompressed, 16, (a: any) => f(a));
 }
 
 export default compress;

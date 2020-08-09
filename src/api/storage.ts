@@ -7,7 +7,7 @@ import { types } from './constants';
 /**
  * Tests availability of storage API
  */
-function isAvailable() {
+function isAvailable(): boolean {
     try {
         ls.setItem('test', 'test');
         ls.removeItem('test');
@@ -23,7 +23,7 @@ function isAvailable() {
  * @param {string} value Value
  * @param {string} isSession Flag to store in session storage
  */
-function setValue(key, value, isSession) {
+function setValue(key: string, value: any, isSession?: boolean) {
     if (key && typeof value !== 'undefined') {
         value = JSON.stringify(
             (value && typeof value === 'object')
@@ -50,7 +50,7 @@ function setValue(key, value, isSession) {
  * Resolves the current value currectly
  * @param {any} value Input value
  */
-function valueResolver(value) {
+function valueResolver(value: any): any {
     return TypeResolver.match(value)
         ? (new TypeResolver().setValue(value)).getValue()
         : value;
@@ -60,7 +60,12 @@ function valueResolver(value) {
  * Gets all saved values from storages
  * @param {string} key Key
  */
-function getAllMatched(key) {
+function getAllMatched(...args: string[]): {
+    key: string;
+    value: any;
+    type: string;
+}[] {
+    const [key] = args;
     const allValues = [];
     try {
         // Local and Session storage
@@ -101,7 +106,8 @@ function getAllMatched(key) {
  * Removes all keys
  * @param {object|string} matchRegex Regular expression to match keys to be deleted
  */
-function deleteKey(key) {
+function deleteKey(...args: string[]) {
+    const [key] = args;
     try {
         let hasValues = false;
         if (this.available) {
@@ -126,19 +132,24 @@ function deleteKey(key) {
  * @class ArgonStorage
  */
 export class ArgonStorage {
-    constructor(config) {
+    config: {
+        compress?: boolean;
+    };
+    constructor(config?: {
+        compress: boolean
+    }) {
         this.config = Object.freeze(assign({ compress: false }, config));
     }
 
-    get available() {
+    get available(): boolean {
         return isAvailable();
     }
 
-    set() {
-        return setValue.apply(this, arguments);
+    set(key: string, value: any, isSession?: boolean) {
+        return setValue.apply(this, [key, value, isSession]);
     }
     get() {
-        const matched = this.getAll.apply(this, arguments).filter(obj => {
+        const matched = this.getAll.apply(this, [...arguments]).filter(obj => {
             if (arguments[1]) {
                 return obj.type === types.SS;
             }
@@ -149,10 +160,10 @@ export class ArgonStorage {
         }
         return;
     }
-    getAll() {
-        return getAllMatched.apply(this, arguments);
+    getAll(...args: any[]) {
+        return getAllMatched.apply(this, args);
     }
     remove() {
-        return deleteKey.apply(this, arguments);
+        return deleteKey.apply(this, [...arguments]);
     }
 }

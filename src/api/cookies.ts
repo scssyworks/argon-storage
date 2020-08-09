@@ -1,20 +1,25 @@
-import { def, trim, each } from './helpers';
+import { trim } from './helpers';
 import { loc, doc } from './vars';
 import { MAX_END_DATE, MILLISECOND_MULTIPLIER, LOCAL_ENV, COOKIE_DEL_DATE } from './constants';
 
 /**
  * Sets user cookie
  * @param {string} key name of cookie
- * @param {string} value cookie value
- * @param {string} exp cookie expiry
+ * @param {any} value cookie value
+ * @param {number} exp cookie expiry
  * @param {string} path url path
  * @param {string} domain supported domain
  * @param {boolean} isSecure Sets security flag
  */
-export function setCookie(key, value, expiryDays, path, domain, isSecure) {
+export function setCookie(
+    key: string,
+    value: any,
+    expiryDays?: number,
+    path = '/',
+    domain = loc.hostname,
+    isSecure?: boolean
+): void {
     if (key && typeof value !== 'undefined') {
-        path = def(path, '/');
-        domain = def(domain, loc.hostname);
         let transformedValue = value;
         if (typeof value === 'object' && value) {
             transformedValue = JSON.stringify(value);
@@ -41,11 +46,14 @@ export function setCookie(key, value, expiryDays, path, domain, isSecure) {
  * @param {string} key Key
  * @param {boolean} trimResult Flag to trim the value
  */
-export function getCookie(key, trimResult) {
+export function getCookie(
+    key: string,
+    trimResult?: boolean
+): string {
     if (key) {
         const cookieStr = decodeURIComponent(doc.cookie);
         let value = '';
-        each(cookieStr.split(';'), cookiePair => {
+        for (const cookiePair of cookieStr.split(';')) {
             const keyPart = `${key}=`;
             const indexOfKey = cookiePair.indexOf(keyPart);
             if (indexOfKey > -1) {
@@ -53,9 +61,9 @@ export function getCookie(key, trimResult) {
                 if (trimResult) {
                     value = trim(value);
                 }
-                return false;
+                break;
             }
-        });
+        }
         return value;
     }
     return '';
@@ -65,7 +73,12 @@ export function getCookie(key, trimResult) {
  * Returns all cookies
  * @param {object|string} matchRegex Regex to filter cookie values
  */
-export function getAllCookies(matchRegex) {
+export function getAllCookies(
+    matchRegex: RegExp
+): {
+    key: string,
+    value: string
+}[] {
     return decodeURIComponent(doc.cookie).split(';').map(cookiePair => {
         const keyValuePair = cookiePair.split('=');
         const key = trim(keyValuePair[0]);
@@ -82,11 +95,13 @@ export function getAllCookies(matchRegex) {
  * @param {string} path url path
  * @param {string} domain supported domain
  */
-export function removeCookie(key, path, domain) {
+export function removeCookie(
+    key: string,
+    path = '/',
+    domain = loc.hostname
+): boolean {
     const currentValue = getCookie.apply(this, [key]);
     if (key && currentValue.length) {
-        path = def(path, '/');
-        domain = def(domain, loc.hostname);
         const cookieDomain = LOCAL_ENV.indexOf(domain) === -1 ? `; domain=${domain.trim()}` : '';
         const deletedCookieString = `${key}=; expires=${COOKIE_DEL_DATE}${cookieDomain}; path=${path}`;
         doc.cookie = deletedCookieString;

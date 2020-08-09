@@ -3,14 +3,11 @@ import { terser } from "rollup-plugin-terser";
 import cleanup from "rollup-plugin-cleanup";
 
 const commonConfig = {
-    input: "src/argon-storage.js",
+    input: "src/argon-storage.ts",
     output: {
         sourcemap: true,
         name: "ArgonStorage",
-        exports: 'named',
-        globals: {
-            window: 'window'
-        }
+        exports: 'named'
     }
 };
 
@@ -21,7 +18,8 @@ umdConfig.output = Object.assign({}, commonConfig.output, {
 });
 umdConfig.plugins = [
     babel({
-        exclude: "node_modules/**"
+        exclude: "node_modules/**",
+        extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts']
     }),
     cleanup({
         maxEmptyLines: 0
@@ -45,7 +43,8 @@ esmConfig.output = Object.assign({}, commonConfig.output, {
 });
 esmConfig.plugins = [
     babel({
-        exclude: "node_modules/**"
+        exclude: "node_modules/**",
+        extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts']
     }),
     cleanup({
         maxEmptyLines: 0

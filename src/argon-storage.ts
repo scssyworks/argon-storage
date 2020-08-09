@@ -1,6 +1,8 @@
+
 import { getCookie, setCookie, removeCookie, getAllCookies } from './api/cookies';
-import { ArgonStorage } from './api/storage';
 import { toUTF16, fromUTF16 } from './modules/utf16';
+import { ArgonStorage } from './api/storage';
+
 
 export default ArgonStorage;
 export {

@@ -1,6 +1,6 @@
 import { f } from './fromCharCode';
 
-function _commonRep3(data, maxpower, resetValue, getNextValue) {
+function _commonRep3(data: any, maxpower: any, resetValue: any, getNextValue: any): any {
     let bits = 0;
     let power = 1;
     while (power !== maxpower) {
@@ -16,7 +16,7 @@ function _commonRep3(data, maxpower, resetValue, getNextValue) {
     return bits;
 }
 
-function decompress(length, resetValue, getNextValue) {
+function decompress(length: any, resetValue: any, getNextValue: any): any {
     const dictionary = [];
     const data = {
         val: getNextValue(0),
@@ -27,7 +27,7 @@ function decompress(length, resetValue, getNextValue) {
     let enlargeIn = 4;
     let dictSize = 4;
     let numBits = 3;
-    let entry = '';
+    let entry: any = '';
     let w;
     let c;
     for (let i = 0; i < 3; i++) {
@@ -88,10 +88,10 @@ function decompress(length, resetValue, getNextValue) {
     }
 }
 
-function decompressImpl(compressed) {
+function decompressImpl(compressed: any): any {
     if (compressed == null) return '';
     if (compressed === '') return null;
-    return decompress(compressed, 32768, i => compressed.charCodeAt(i));
+    return decompress(compressed, 32768, (i: any) => compressed.charCodeAt(i));
 }
 
 export default decompress;
